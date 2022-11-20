@@ -1,0 +1,182 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using ProjectsManagement.Models;
+@model List<Employee>;
+@{
+}
+
+<style>
+    .selected {
+        background: silver;
+    }
+</style>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Сотрудники компании</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="~/css/Table.css" />
+</head>
+
+
+
+<body>
+    <input type="hidden" id="EmployeeId" />
+
+
+    <div class="button">
+        <a href="#" id="open_popup">Заявка</a>
+    </div>
+
+    <div class="popup" id="popup">
+        <div class="popup_container">
+            <div class="popup_body" id="popup_body">
+                <p>Оставить заказ</p>
+                <form action="">
+                    <input id="Name" type="text" placeholder="Имя" />
+                    <input id="SurName" type="text" placeholder="Отчество" />
+                    <input id="LastName" type="text" placeholder="Фамилия" />
+                    <input id="Email" type="text" placeholder="Email" />
+                    <button id="AddBtn">Сохранить</button>
+                    <button id="DeleteButton">Удалить</button>
+                </form>
+                <div class="popup_close" id="popup_close">X</div>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                string getEmployeeArgument = $"{Model[i].Id},'{Model[i].FirstName}','{Model[i].SurName}','{Model[i].LastName}','{Model[i].Email}'";
+                <tr id="@Model[i].Id" onclick="getEmployee(@getEmployeeArgument)">
+                    <td>@Model[i].FirstName</td>
+                    <td>@Model[i].LastName</td>
+                    <td>@Model[i].SurName</td>
+                    <td>@Model[i].Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</body>
+
+</html>
+
+<script>
+
+    //Добавление данных сотрудника в БД
+    function Add(FirstName, SurName, LastName, Email) {
+        console.log("Add Begin");
+        $.ajax({
+            url: '/Employee/Add',
+            type: 'POST',
+            async: false,
+            data: { FirstName: FirstName, SurName: SurName, LastName: LastName, Email: Email },
+            success: function(data) {
+                console.log(result);
+                alert("Result is" + result)
+            }
+        });
+    }
+
+    //Изменение данных сотрудника в БД
+    function Edit(Id, FirstName, SurName, LastName, Email) {
+        console.log("Edit Begin");
+        $.ajax({
+            url: '/Employee/Edit',
+            type: 'POST',
+            async: false,
+            data: { Id: Id, FirstName: FirstName, SurName: SurName, LastName: LastName, Email: Email },
+            success: function(data) {
+                console.log(result);
+                alert("Result is" + result)
+            }
+        });
+    }
+
+    //Удаление данных сотрудника из БД
+    function Delete(Id, FirstName, SurName, LastName, Email) {
+        console.log("Edit Begin");
+        $.ajax({
+            url: '/Employee/Delete',
+            type: 'POST',
+            async: false,
+            data: { Id: Id },
+            success: function(data) {
+                console.log(result);
+                alert("Result is" + result)
+            }
+        });
+    }
+
+
+    //Получение данных выбранного сотрудника и открытие в попапе
+    function getEmployee(Id, FirstName, SurName, LastName, Email) {
+        console.log("getEmployee Begin");
+        document.getElementById("EmployeeId").value = Id;
+        document.getElementById("Name").value = FirstName;
+        document.getElementById("SurName").value = SurName;
+        document.getElementById("LastName").value = LastName;
+        document.getElementById("Email").value = Email;
+        document.getElementById('popup').classList.add('active');
+    }
+
+
+    //Обработчик событий для кнопки сохранить в попапе
+    document.getElementById("AddBtn").addEventListener("click", async () => {
+        const Id = document.getElementById("EmployeeId").value;
+        document.getElementById("EmployeeId").value = "";
+        const FirstName = document.getElementById("Name").value;
+        const SurName = document.getElementById("SurName").value;
+        const LastName = document.getElementById("LastName").value;
+        const Email = document.getElementById("Email").value;
+        if (Id === "") {
+            await Add(FirstName, SurName, LastName, Email);
+        }
+        else {
+            await Edit(Id, FirstName, SurName, LastName, Email);
+        }
+    });
+
+
+    //Обработчик события для кнопки удалить в попапе
+    document.getElementById("DeleteButton").addEventListener("click", async () => {
+        const Id = document.getElementById("EmployeeId").value;
+        document.getElementById("EmployeeId").value = "";
+        await Delete(Id);
+    })
+
+
+    //Обработчик события для открытия попапа
+    document.getElementById('open_popup').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('popup').classList.add('active');
+    })
+
+
+    //Обработчик события для кнопки закрытия попапа
+    document.getElementById('popup_close').addEventListener('click', () => {
+        document.getElementById('popup').classList.remove('active');
+        document.getElementById("EmployeeId").value = "";
+        document.getElementById("Name").value = "";
+        document.getElementById("SurName").value = "";
+        document.getElementById("LastName").value = "";
+        document.getElementById("Email").value = "";
+    })
+
+</script>

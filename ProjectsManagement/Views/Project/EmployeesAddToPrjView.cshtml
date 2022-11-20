@@ -1,0 +1,83 @@
+﻿@using ProjectsManagement.Models;
+@model List<Employee>
+
+<html>
+<head>
+
+</head>
+
+<body>
+    <div class="popup" id="employee_popup">
+        <div class="popup_container">
+            <div class="popup_body" id="popup_body">
+
+                @if (Model.Count != 0)
+                {
+                    <table>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                string getEmployeeArgument = $"{Model[i].Id},'{Model[i].FirstName}','{Model[i].SurName}','{Model[i].LastName}','{Model[i].Email}'";
+                                <tr id="@Model[i].Id" onclick="ActiveCheck()">
+                                    <td>@Model[i].FirstName</td>
+                                    <td>@Model[i].LastName</td>
+                                    <td>@Model[i].SurName</td>
+                                    <td>@Model[i].Email</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>Список сотрудников пуст</p>
+                }
+
+                <button id="AddEmployees">Сохранить</button>
+                <div class="popup_close" id="employee_popup_close">X</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+
+    //Обработчик события для кнопки закрытия попапа
+    document.getElementById('employee_popup_close').addEventListener('click', () => {
+        document.getElementById('employee_popup').classList.remove('active');
+    })
+
+    //Вызов функции добавления сотрудника
+    document.getElementById("AddEmployees").addEventListener("click", async () => {
+        const ProjectId = document.getElementById("ProjectId").value;
+        await Add(ProjectId);
+    });
+
+    document.getElementById("DeleteEmployees").addEventListener("click", async () => {
+        const ProjectId = document.getElementById("ProjectId").value;
+        await Delete(ProjectId);
+    })
+
+    //Функция добавления сотрудника в проект
+    function Add(ProjectId) {
+        console.log("Add Begin");
+        let SelectedEmployees = Array.from(document.querySelectorAll(".EmployeeRowSelected"));
+        let SelectedEmployeesId = SelectedEmployees.map((elem) => elem.id);
+        $.post('/Project/AddEmployee', { 'SelectedEmployeesId[]': SelectedEmployeesId, 'ProjectId': ProjectId });
+    }
+
+    //Функция проверки выбран сотрудник или нет
+    function ActiveCheck() {
+
+        const SelectedRow = event.currentTarget;
+        if (SelectedRow.classList.contains('EmployeeRowSelected')) {
+            SelectedRow.classList.remove('EmployeeRowSelected');
+        }
+        else {
+            SelectedRow.classList.add('EmployeeRowSelected');
+        }
+    }
+
+</script>

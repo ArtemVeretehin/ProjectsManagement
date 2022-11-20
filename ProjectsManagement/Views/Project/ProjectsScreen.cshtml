@@ -1,0 +1,223 @@
+﻿@using ProjectsManagement.Models;
+@model List<Project>;
+@{
+}
+
+<style>
+    .selected {
+        background: silver;
+    }
+</style>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Сотрудники компании</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="~/css/Table.css" />
+</head>
+
+
+
+<body>
+    <input type="hidden" id="ProjectId" />
+
+
+    <div class="button">
+        <a href="#" id="open_popup">Заявка</a>
+    </div>
+
+    <!--Блок ниже - попап для ввода данных о проекте-->
+    <div class="popup" id="prjEditPopup">
+        <div class="popup_container">
+            <div class="popup_body" id="prjEditPopup_body">
+                <p>Оставить заказ</p>
+                <form action="">
+                    <input id="Title" type="text" placeholder="Название" />
+                    <input id="CustomerCompany_Title" type="text" placeholder="Компания - Заказчик" />
+                    <input id="ExecutorCompany_Title" type="text" placeholder="Компания - Исполнитель" />
+                    <input id="TimeFrame" type="text" placeholder="Временные рамки" />
+                    <input id="Priority" type="text" placeholder="Приоритет" />
+                    <button id="AddBtn">Сохранить</button>
+                    <button id="DeleteButton">Удалить</button>
+                </form>
+                <div class="popup_close" id="prjEditPopup_close">X</div>
+            </div>
+        </div>
+    </div>
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Компания - Заказчик</th>
+                <th>Компания - Исполнитель</th>
+                <th>Сотрудники проекта</th>
+                <th>Руководитель проекта</th>
+                <th>Временные рамки</th>
+                <th>Приоритет</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                string getProjectArgument = $"{Model[i].Id},'{Model[i].Title}','{Model[i].CustomerCompany_Title}','{Model[i].ExecutorCompany_Title}','{Model[i].TimeFrame}','{Model[i].Priority}'";
+                <tr id=@($"prjRecord{Model[i].Id}") onclick="getProject(@getProjectArgument)">
+                    <td>@Model[i].Title</td>
+                    <td>@Model[i].CustomerCompany_Title</td>
+                    <td>@Model[i].ExecutorCompany_Title</td>
+                    <td>
+                        @foreach (var employee in Model[i].Employees)
+                        {
+                            @employee.FirstName @employee.SurName @employee.LastName
+                            <br>
+                        }
+                        <div class="button">
+                            <a href="#" id=@($"open_employee_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, false)">Добавить</a>
+                            <a href="#" id=@($"open_employeeDelete_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, false)">Удалить</a>
+                        </div>
+                    </td>
+                    <td>
+                        @Model[i].Employees.Where(employee => employee.Id == @Model[i].LeadEmployeeId).Select(employee => $"{$"{employee.FirstName} {employee.SurName} {employee.LastName}"}").FirstOrDefault()
+                        
+                        <div class="button">
+                            <a href="#" id=@($"open_leadChange_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, true)">Заявка</a>
+                        </div>
+                    </td>
+                    <td>@Model[i].TimeFrame</td>
+                    <td>@Model[i].Priority</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div id="partialZone">
+    </div>
+
+</body>
+
+</html>
+
+
+
+
+<script>
+
+    //Открытие попапа с сотрудниками
+    function loadEmployeePopup(e, ProjectId, isLeadConfiguration) {
+        e.preventDefault();
+
+        if (e.target.id.includes("open_employee_popup")) {
+            $("#partialZone").load("/Project/EmployeesAddToPrjView", { ProjectId: ProjectId}, () => {
+                document.getElementById('employee_popup').classList.add('active');
+            });
+        }
+
+        if (e.target.id.includes("open_employeeDelete_popup")) {
+            $("#partialZone").load("/Project/EmployeesDeleteFromPrjView", { ProjectId: ProjectId}, () => {
+                document.getElementById('employee_popup').classList.add('active');
+            });
+        }
+
+        if (e.target.id.includes("open_leadChange_popup")) {
+            $("#partialZone").load("/Project/EmployeesPrjLeadChangeView", { ProjectId: ProjectId}, () => {
+                document.getElementById('employee_popup').classList.add('active');
+            });
+        }
+    }
+
+
+    //Добавление проекта в БД
+    function Add(Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
+        console.log("Add Begin");
+        alert("!!!")
+        $.post("/Project/Add", { Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority })
+            .done(function(data) { location.reload(); console.log(data); });
+    }
+
+    //Изменение данных выбранного проекта
+    function Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
+        console.log("Edit Begin");
+        $.post("/Project/Edit", { Id: Id, Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority })
+            .done(function(data) { location.reload(); });
+    }
+
+    //Удаление данных выбранного проекта
+    function Delete(Id) {
+        console.log("Delete Begin");
+        $.post("/Project/Delete", { Id: Id })
+            .done(function(data) { location.reload(); });
+    }
+
+    //Получение данных выбранного проекта (для отображения в попапе)
+    function getProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
+        console.log("getProject Begin");
+        alert(event.target);
+        alert(event.currentTarget);
+        alert(event.currentTarget.id);
+        if (!event.currentTarget.id.includes("prjRecord")) {
+            document.getElementById("ProjectId").value = Id;
+        }
+        else {
+            document.getElementById("ProjectId").value = Id;
+            document.getElementById("Title").value = Title;
+            document.getElementById("CustomerCompany_Title").value = CustomerCompany_Title;
+            document.getElementById("ExecutorCompany_Title").value = ExecutorCompany_Title;
+            document.getElementById("TimeFrame").value = TimeFrame;
+            document.getElementById("Priority").value = Priority;
+            document.getElementById('prjEditPopup').classList.add('active');
+        }
+    }
+
+
+    //Обработчик событий для кнопки сохранить в попапе проекта
+    document.getElementById("AddBtn").addEventListener("click", async () => {
+        const Id = document.getElementById("ProjectId").value;
+        const Title = document.getElementById("Title").value;
+        const CustomerCompany_Title = document.getElementById("CustomerCompany_Title").value;
+        const ExecutorCompany_Title = document.getElementById("ExecutorCompany_Title").value;
+        const TimeFrame = document.getElementById("TimeFrame").value;
+        const Priority = document.getElementById("Priority").value;
+        if (Id === "") {
+            await Add(Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority);
+        }
+        else {
+            await Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority);
+        }
+
+    });
+
+
+    //Обработчик события для кнопки удалить в попапе проекта
+    document.getElementById("DeleteButton").addEventListener("click", async () => {
+        const Id = document.getElementById("ProjectId").value;
+        await Delete(Id);
+    })
+
+
+    //Обработчик события для открытия попапа проекта
+    document.getElementById('open_popup').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('prjEditPopup').classList.add('active');
+    })
+
+
+    //Обработчик события для кнопки закрытия попапа проекта
+    document.getElementById('prjEditPopup_close').addEventListener('click', () => {
+        document.getElementById('prjEditPopup').classList.remove('active');
+        document.getElementById("ProjectId").value = "";
+        document.getElementById("Title").value = "";
+        document.getElementById("CustomerCompany_Title").value = "";
+        document.getElementById("ExecutorCompany_Title").value = "";
+        document.getElementById("TimeFrame").value = "";
+        document.getElementById("Priority").value = "";
+    })
+
+
+</script>
+
+
+
