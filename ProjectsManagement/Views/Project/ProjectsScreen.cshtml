@@ -25,7 +25,7 @@
 
 
     <div class="button">
-        <a href="#" id="open_popup">Заявка</a>
+        <a href="#" id="open_popup">Создать проект</a>
     </div>
 
     <!--Блок ниже - попап для ввода данных о проекте-->
@@ -98,7 +98,7 @@
                         @Model[i].Employees.Where(employee => employee.Id == @Model[i].LeadEmployeeId).Select(employee => $"{$"{employee.FirstName} {employee.SurName} {employee.LastName}"}").FirstOrDefault()
 
                         <div class="button">
-                            <a href="#" id=@($"open_leadChange_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, true)">Заявка</a>
+                            <a href="#" id=@($"open_leadChange_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, true)">Выбрать руководителя</a>
                         </div>
                     </td>
                     <td>@Model[i].TimeFrame</td>
@@ -123,7 +123,7 @@
     //Открытие попапа с сотрудниками
     function loadEmployeePopup(e, ProjectId, isLeadConfiguration) {
         e.preventDefault();
-        e.stopPropagation();
+
         if (e.target.id.includes("open_employee_popup")) {
             $("#partialZone").load("/Project/EmployeesAddToPrjView", { ProjectId: ProjectId }, () => {
                 document.getElementById('employee_popup').classList.add('active');
@@ -144,42 +144,64 @@
     }
 
 
-    //Добавление проекта в БД
+    //Добавление данных проекта в БД
     function Add(Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
         console.log("Add Begin");
-        alert("!!!")
-        $.post("/Project/Add", { Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority })
-            .done(function(data) { location.reload(); console.log(data); });
+        $.ajax({
+            url: '/Project/Add',
+            type: 'POST',
+            async: false,
+            data: { Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority },
+            success: function(data) {
+                location.reload()
+            }
+        });
     }
 
 
-
-
-    //Изменение данных выбранного проекта
+    //Добавление данных проекта в БД
     function Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
-        console.log("Edit Begin");
-        $.post("/Project/Edit", { Id: Id, Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority })
-            .done(function(data) { location.reload(); });
+        console.log("Add Begin");
+        $.ajax({
+            url: '/Project/Edit',
+            type: 'POST',
+            async: false,
+            data: { Id: Id, Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority },
+            success: function(data) {
+                location.reload()
+            }
+        });
     }
 
-    //Удаление данных выбранного проекта
+
+    //Удаление данных выбранного проекта в БД
     function Delete(Id) {
-        console.log("Delete Begin");
-        $.post("/Project/Delete", { Id: Id })
-            .done(function(data) { location.reload(); });
+        console.log("Add Begin");
+        $.ajax({
+            url: '/Project/Delete',
+            type: 'POST',
+            async: false,
+            data: { Id: Id },
+            success: function(data) {
+                location.reload()
+            }
+        });
     }
+
+
+
+
 
     //Получение данных выбранного проекта (для отображения в попапе)
     function getProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
-        console.log("getProject Begin");
-        alert("GetPROJECTBEGIN")
-        alert(event.target);
-        alert(event.currentTarget);
-        alert(event.currentTarget.id);
-        if (!event.currentTarget.id.includes("prjRecord")) {
+        console.log("getProject Begin");   
+
+        if ((event.target.id.includes("open_leadChange_popup")) || (event.target.id.includes("open_employeeDelete_popup")) || (event.target.id.includes("open_employee_popup"))) {
+            //alert("Нажатие на ссылку!")
             document.getElementById("ProjectId").value = Id;
         }
         else {
+            //alert("Нажатие не на ссылку!")
             document.getElementById("ProjectId").value = Id;
             document.getElementById("Title").value = Title;
             document.getElementById("CustomerCompany_Title").value = CustomerCompany_Title;

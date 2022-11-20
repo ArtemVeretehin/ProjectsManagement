@@ -60,13 +60,26 @@
         await Delete(ProjectId);
     })
 
+
+
     //Функция добавления сотрудника в проект
     function Add(ProjectId) {
         console.log("Add Begin");
         let SelectedEmployees = Array.from(document.querySelectorAll(".EmployeeRowSelected"));
         let SelectedEmployeesId = SelectedEmployees.map((elem) => elem.id);
-        $.post('/Project/AddEmployee', { 'SelectedEmployeesId[]': SelectedEmployeesId, 'ProjectId': ProjectId });
+        $.ajax({
+            url: '/Project/AddEmployee',
+            type: 'POST',
+            async: false,
+            data: { 'SelectedEmployeesId[]': SelectedEmployeesId, 'ProjectId': ProjectId },
+            success: function(data) {
+                location.reload()
+            }
+        });
     }
+
+
+
 
     //Функция проверки выбран сотрудник или нет
     function ActiveCheck() {

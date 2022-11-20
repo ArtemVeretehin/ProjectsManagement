@@ -55,14 +55,25 @@
         await ChangeLead(ProjectId);
     });
 
-
     //Функция добавления сотрудника в проект
     function ChangeLead(ProjectId) {
-        console.log("Change Begin");
-        let SelectedEmployeeId = document.querySelector(".EmployeeRowSelected").id;
+        console.log("Add Begin");
         
-        $.post('/Project/ChangeLead', { 'SelectedEmployeeId': SelectedEmployeeId, 'ProjectId': ProjectId });
+        let SelectedEmployeeId = document.querySelector(".EmployeeRowSelected").id;
+
+        $.ajax({
+            url: '/Project/ChangeLead',
+            type: 'POST',
+            async: false,
+            data: { 'SelectedEmployeeId': SelectedEmployeeId, 'ProjectId': ProjectId },
+            success: function(data) {
+                location.reload()
+            }
+        });
     }
+
+
+
 
     //Функция проверки выбран сотрудник или нет
     function ActiveCheck() {

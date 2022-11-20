@@ -50,18 +50,30 @@
 
 
     document.getElementById("DeleteEmployees").addEventListener("click", async () => {
-        alert("Triggered");
         const ProjectId = document.getElementById("ProjectId").value;
         await Delete(ProjectId);
     })
+
+
 
     //Функция удаления сотрудника с проекта
     function Delete(ProjectId) {
         console.log("Add Begin");
         let SelectedEmployees = Array.from(document.querySelectorAll(".EmployeeRowSelected"));
         let SelectedEmployeesId = SelectedEmployees.map((elem) => elem.id);
-        $.post('/Project/DeleteEmployee', { 'SelectedEmployeesId[]': SelectedEmployeesId, 'ProjectId': ProjectId });
+        $.ajax({
+            url: '/Project/DeleteEmployee',
+            type: 'POST',
+            async: false,
+            data: { 'SelectedEmployeesId[]': SelectedEmployeesId, 'ProjectId': ProjectId },
+            success: function(data) {
+                location.reload()
+            }
+        });
     }
+
+
+
 
     //Функция проверки выбран сотрудник или нет
     function ActiveCheck() {
