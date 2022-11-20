@@ -19,6 +19,17 @@ namespace ProjectsManagement.Models
             this.TimeFrame = TimeFrame;
             this.Priority = Priority;
         }
+
+        public Project(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string TimeFrame, List<Employee> Employees, int LeadEmployeeId, int Priority)
+        {
+            this.Title = Title;
+            this.CustomerCompany_Title = CustomerCompany_Title;
+            this.ExecutorCompany_Title = ExecutorCompany_Title;
+            this.TimeFrame = TimeFrame;
+            this.Employees = Employees;
+            this.LeadEmployeeId = LeadEmployeeId;
+            this.Priority = Priority;
+        }
     }
     
 }

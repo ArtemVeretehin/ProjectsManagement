@@ -10,11 +10,111 @@ namespace ProjectsManagement.Controllers
         }
 
 
-        public IActionResult ProjectsScreen()
+        public IActionResult ProjectsScreen(string sortOrder)
         {
-            List<Project> Projects = ProjectsOperations.GetProjects();
-            
-            return View(Projects);
+            ViewBag.ProjectNameSortParam = String.IsNullOrEmpty(sortOrder) ? "ProjectName_desc" : "";
+            ViewBag.CustomerNameSortParam = (sortOrder == "CustomerName") ? "CustomerName_desc" : "CustomerName";
+            ViewBag.ExecutorNameSortParam = (sortOrder == "ExecutorName") ? "ExecutorName_desc" : "ExecutorName";
+            ViewBag.LeadNameSortParam = (sortOrder == "LeadName") ? "LeadName_desc" : "LeadName";
+            ViewBag.TimeFrameSortParam = (sortOrder == "TimeFrame") ? "TimeFrame_desc" : "TimeFrame";
+            ViewBag.PrioritySortParam = (sortOrder == "Priority") ? "Priority_desc" : "Priority";
+
+            IEnumerable<Project> Projects = ProjectsOperations.GetProjects();
+
+            IEnumerable<Employee> LeadEmployees;
+            switch (sortOrder)
+            {
+                case "ProjectName_desc":
+                    Projects = Projects.OrderByDescending(prj => prj.Title);
+                    break;
+                case "CustomerName":
+                    Projects = Projects.OrderBy(prj => prj.CustomerCompany_Title);
+                    break;
+                case "CustomerName_desc":
+                    Projects = Projects.OrderByDescending(prj => prj.CustomerCompany_Title);
+                    break;
+                case "ExecutorName":
+                    Projects = Projects.OrderBy(prj => prj.ExecutorCompany_Title);
+                    break;
+                case "ExecutorName_desc":
+                    Projects = Projects.OrderByDescending(prj => prj.ExecutorCompany_Title);
+                    break;
+                
+
+                case "LeadName":
+
+                    LeadEmployees = Projects.Select(prj => prj.Employees.Where(employe => employe.Id == prj.LeadEmployeeId).FirstOrDefault());
+
+                    Projects = Projects.Join(LeadEmployees,
+                       prj => prj.LeadEmployeeId,
+                       leadEmployee => leadEmployee.Id,
+                       (prj, leadEmployee) => new
+                       {
+                           Title = prj.Title,
+                           CustomerCompany_Title = prj.CustomerCompany_Title,
+                           ExecutorCompany_Title = prj.ExecutorCompany_Title,
+                           TimeFrame = prj.TimeFrame,
+                           Employees = prj.Employees,
+                           LeadEmployeeId = prj.LeadEmployeeId,
+                           Priority = prj.Priority,
+                           leadEmployee_lastName = leadEmployee.LastName
+                       })
+                       .OrderBy(prj_employee => prj_employee.leadEmployee_lastName)
+                       .Select(prj_employee => new Project(
+                           prj_employee.Title,
+                           prj_employee.CustomerCompany_Title,
+                           prj_employee.ExecutorCompany_Title,
+                           prj_employee.TimeFrame,
+                           prj_employee.Employees,
+                           prj_employee.LeadEmployeeId,
+                           prj_employee.Priority
+                           ));
+
+                    break;
+
+                case "LeadName_desc":
+                   
+                    LeadEmployees = Projects.Select(prj => prj.Employees.Where(employe => employe.Id == prj.LeadEmployeeId).FirstOrDefault());
+
+                    Projects = Projects.Join(LeadEmployees,
+                       prj => prj.LeadEmployeeId,
+                       leadEmployee => leadEmployee.Id,
+                       (prj, leadEmployee) => new
+                       {
+                           Title = prj.Title,
+                           CustomerCompany_Title = prj.CustomerCompany_Title,
+                           ExecutorCompany_Title = prj.ExecutorCompany_Title,
+                           TimeFrame = prj.TimeFrame,
+                           Employees = prj.Employees,
+                           LeadEmployeeId = prj.LeadEmployeeId,
+                           Priority = prj.Priority,
+                           leadEmployee_lastName = leadEmployee.LastName
+                       })
+                       .OrderByDescending(prj_employee => prj_employee.leadEmployee_lastName)
+                       .Select(prj_employee => new Project(
+                           prj_employee.Title,
+                           prj_employee.CustomerCompany_Title,
+                           prj_employee.ExecutorCompany_Title,
+                           prj_employee.TimeFrame,
+                           prj_employee.Employees,
+                           prj_employee.LeadEmployeeId,
+                           prj_employee.Priority
+                           ));
+                    break;
+
+
+                //Добавить сортировку по датам
+                case "Priority":
+                    Projects = Projects.OrderBy(prj => prj.Priority);
+                    break;
+                case "Priority_desc":
+                    Projects = Projects.OrderByDescending(prj => prj.Priority);
+                    break;
+                default:
+                    Projects = Projects.OrderBy(prj => prj.CustomerCompany_Title);
+                    break;
+            }
+            return View(Projects.ToList());
         }
 
         /// <summary>

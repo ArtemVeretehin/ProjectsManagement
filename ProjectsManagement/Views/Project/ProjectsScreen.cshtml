@@ -51,13 +51,27 @@
     <table>
         <thead>
             <tr>
-                <th>Название</th>
-                <th>Компания - Заказчик</th>
-                <th>Компания - Исполнитель</th>
-                <th>Сотрудники проекта</th>
-                <th>Руководитель проекта</th>
-                <th>Временные рамки</th>
-                <th>Приоритет</th>
+                <th>
+                    @Html.ActionLink("Название","ProjectsScreen", new { sortOrder = ViewBag.ProjectNameSortParam})
+                </th>
+                <th>
+                    @Html.ActionLink("Компания - заказчик","ProjectsScreen", new { sortOrder = ViewBag.CustomerNameSortParam})
+                </th>
+                <th>
+                    @Html.ActionLink("Компания - Исполнитель","ProjectsScreen", new { sortOrder = ViewBag.ExecutorNameSortParam})
+                </th>
+                <th>
+                    @Html.ActionLink("Сотрудники проекта","ProjectsScreen", new { sortOrder = ViewBag.CustomerNameSortParam})
+                </th>
+                <th>
+                    @Html.ActionLink("Руководитель проекта","ProjectsScreen", new { sortOrder = ViewBag.LeadNameSortParam})
+                </th>
+                <th>
+                    @Html.ActionLink("Временные рамки","ProjectsScreen", new { sortOrder = ViewBag.TimeFrameSortParam})
+                </th>
+                <th>
+                    @Html.ActionLink("Приоритет","ProjectsScreen", new { sortOrder = ViewBag.PrioritySortParam})
+                </th>
             </tr>
         </thead>
 
@@ -82,7 +96,7 @@
                     </td>
                     <td>
                         @Model[i].Employees.Where(employee => employee.Id == @Model[i].LeadEmployeeId).Select(employee => $"{$"{employee.FirstName} {employee.SurName} {employee.LastName}"}").FirstOrDefault()
-                        
+
                         <div class="button">
                             <a href="#" id=@($"open_leadChange_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, true)">Заявка</a>
                         </div>
@@ -109,21 +123,21 @@
     //Открытие попапа с сотрудниками
     function loadEmployeePopup(e, ProjectId, isLeadConfiguration) {
         e.preventDefault();
-
+        e.stopPropagation();
         if (e.target.id.includes("open_employee_popup")) {
-            $("#partialZone").load("/Project/EmployeesAddToPrjView", { ProjectId: ProjectId}, () => {
+            $("#partialZone").load("/Project/EmployeesAddToPrjView", { ProjectId: ProjectId }, () => {
                 document.getElementById('employee_popup').classList.add('active');
             });
         }
 
         if (e.target.id.includes("open_employeeDelete_popup")) {
-            $("#partialZone").load("/Project/EmployeesDeleteFromPrjView", { ProjectId: ProjectId}, () => {
+            $("#partialZone").load("/Project/EmployeesDeleteFromPrjView", { ProjectId: ProjectId }, () => {
                 document.getElementById('employee_popup').classList.add('active');
             });
         }
 
         if (e.target.id.includes("open_leadChange_popup")) {
-            $("#partialZone").load("/Project/EmployeesPrjLeadChangeView", { ProjectId: ProjectId}, () => {
+            $("#partialZone").load("/Project/EmployeesPrjLeadChangeView", { ProjectId: ProjectId }, () => {
                 document.getElementById('employee_popup').classList.add('active');
             });
         }
@@ -137,6 +151,9 @@
         $.post("/Project/Add", { Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority })
             .done(function(data) { location.reload(); console.log(data); });
     }
+
+
+
 
     //Изменение данных выбранного проекта
     function Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
@@ -155,6 +172,7 @@
     //Получение данных выбранного проекта (для отображения в попапе)
     function getProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
         console.log("getProject Begin");
+        alert("GetPROJECTBEGIN")
         alert(event.target);
         alert(event.currentTarget);
         alert(event.currentTarget.id);
