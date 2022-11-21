@@ -53,7 +53,8 @@ namespace ProjectsManagement.Controllers
                            Title = prj.Title,
                            CustomerCompany_Title = prj.CustomerCompany_Title,
                            ExecutorCompany_Title = prj.ExecutorCompany_Title,
-                           TimeFrame = prj.TimeFrame,
+                           DtStart = prj.DtStart,
+                           DtEnd = prj.DtEnd,
                            Employees = prj.Employees,
                            LeadEmployeeId = prj.LeadEmployeeId,
                            Priority = prj.Priority,
@@ -64,7 +65,8 @@ namespace ProjectsManagement.Controllers
                            prj_employee.Title,
                            prj_employee.CustomerCompany_Title,
                            prj_employee.ExecutorCompany_Title,
-                           prj_employee.TimeFrame,
+                           prj_employee.DtStart,
+                           prj_employee.DtEnd,
                            prj_employee.Employees,
                            prj_employee.LeadEmployeeId,
                            prj_employee.Priority
@@ -84,7 +86,8 @@ namespace ProjectsManagement.Controllers
                            Title = prj.Title,
                            CustomerCompany_Title = prj.CustomerCompany_Title,
                            ExecutorCompany_Title = prj.ExecutorCompany_Title,
-                           TimeFrame = prj.TimeFrame,
+                           DtStart = prj.DtStart,
+                           DtEnd = prj.DtEnd,
                            Employees = prj.Employees,
                            LeadEmployeeId = prj.LeadEmployeeId,
                            Priority = prj.Priority,
@@ -95,7 +98,8 @@ namespace ProjectsManagement.Controllers
                            prj_employee.Title,
                            prj_employee.CustomerCompany_Title,
                            prj_employee.ExecutorCompany_Title,
-                           prj_employee.TimeFrame,
+                           prj_employee.DtStart,
+                           prj_employee.DtEnd,
                            prj_employee.Employees,
                            prj_employee.LeadEmployeeId,
                            prj_employee.Priority
@@ -123,13 +127,14 @@ namespace ProjectsManagement.Controllers
         /// <param name="Title"></param>
         /// <param name="CustomerCompany_Title"></param>
         /// <param name="ExecutorCompany_Title"></param>
-        /// <param name="TimeFrame"></param>
+        /// <param name="DtStart"></param>
+        /// <param name="DtEnd"></param>
         /// <param name="Priority"></param>
         /// <returns></returns>
         [HttpPost]
-        public bool Add(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string TimeFrame, int Priority)
+        public bool Add(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string? DtStart, string? DtEnd, int Priority)
         {
-            ProjectsOperations.AddProject(Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority);
+            ProjectsOperations.AddProject(Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
             return true;
         }
 
@@ -140,13 +145,14 @@ namespace ProjectsManagement.Controllers
         /// <param name="Title"></param>
         /// <param name="CustomerCompany_Title"></param>
         /// <param name="ExecutorCompany_Title"></param>
-        /// <param name="TimeFrame"></param>
+        /// <param name="DtStart"></param>
+        /// <param name="DtEnd"></param>
         /// <param name="Priority"></param>
         /// <returns></returns>
         [HttpPost]
-        public bool Edit(string Id, string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string TimeFrame, int Priority)
+        public bool Edit(string Id, string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string? DtStart, string? DtEnd, int Priority)
         {
-            ProjectsOperations.EditProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority);
+            ProjectsOperations.EditProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
             return true;
         }
 

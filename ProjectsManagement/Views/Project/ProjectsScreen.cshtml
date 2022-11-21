@@ -22,7 +22,7 @@
 
 <body>
     <input type="hidden" id="ProjectId" />
-
+    <input id="dataTest" type="date" name="dataTestName">
 
     <div class="button">
         <a href="#" id="open_popup">Создать проект</a>
@@ -37,7 +37,8 @@
                     <input id="Title" type="text" placeholder="Название" />
                     <input id="CustomerCompany_Title" type="text" placeholder="Компания - Заказчик" />
                     <input id="ExecutorCompany_Title" type="text" placeholder="Компания - Исполнитель" />
-                    <input id="TimeFrame" type="text" placeholder="Временные рамки" />
+                    <input id="DtStart" type="date">
+                    <input id="DtEnd" type="date">
                     <input id="Priority" type="text" placeholder="Приоритет" />
                     <button id="AddBtn">Сохранить</button>
                     <button id="DeleteButton">Удалить</button>
@@ -67,7 +68,10 @@
                     @Html.ActionLink("Руководитель проекта","ProjectsScreen", new { sortOrder = ViewBag.LeadNameSortParam})
                 </th>
                 <th>
-                    @Html.ActionLink("Временные рамки","ProjectsScreen", new { sortOrder = ViewBag.TimeFrameSortParam})
+                    @Html.ActionLink("Дата начала","ProjectsScreen", new { sortOrder = ViewBag.DtStartSortParam})
+                </th>
+                <th>
+                    @Html.ActionLink("Дата окончания","ProjectsScreen", new { sortOrder = ViewBag.DtEndSortParam})
                 </th>
                 <th>
                     @Html.ActionLink("Приоритет","ProjectsScreen", new { sortOrder = ViewBag.PrioritySortParam})
@@ -78,7 +82,7 @@
         <tbody>
             @for (int i = 0; i < Model.Count; i++)
             {
-                string getProjectArgument = $"{Model[i].Id},'{Model[i].Title}','{Model[i].CustomerCompany_Title}','{Model[i].ExecutorCompany_Title}','{Model[i].TimeFrame}','{Model[i].Priority}'";
+                string getProjectArgument = $"{Model[i].Id},'{Model[i].Title}','{Model[i].CustomerCompany_Title}','{Model[i].ExecutorCompany_Title}','{Model[i].DtStart}','{Model[i].DtEnd}','{Model[i].Priority}'";
                 <tr id=@($"prjRecord{Model[i].Id}") onclick="getProject(@getProjectArgument)">
                     <td>@Model[i].Title</td>
                     <td>@Model[i].CustomerCompany_Title</td>
@@ -101,7 +105,8 @@
                             <a href="#" id=@($"open_leadChange_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, true)">Выбрать руководителя</a>
                         </div>
                     </td>
-                    <td>@Model[i].TimeFrame</td>
+                    <td>@Model[i].DtStart</td>
+                    <td>@Model[i].DtEnd</td>
                     <td>@Model[i].Priority</td>
                 </tr>
             }
@@ -145,13 +150,13 @@
 
 
     //Добавление данных проекта в БД
-    function Add(Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
+    function Add(Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority) {
         console.log("Add Begin");
         $.ajax({
             url: '/Project/Add',
             type: 'POST',
             async: false,
-            data: { Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority },
+            data: { Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, DtStart: DtStart, DtEnd: DtEnd, Priority: Priority },
             success: function(data) {
                 location.reload()
             }
@@ -160,13 +165,13 @@
 
 
     //Добавление данных проекта в БД
-    function Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
+    function Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority) {
         console.log("Add Begin");
         $.ajax({
             url: '/Project/Edit',
             type: 'POST',
             async: false,
-            data: { Id: Id, Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, TimeFrame: TimeFrame, Priority: Priority },
+            data: { Id: Id, Title: Title, CustomerCompany_Title: CustomerCompany_Title, ExecutorCompany_Title: ExecutorCompany_Title, DtStart: DtStart, DtEnd: DtEnd, Priority: Priority },
             success: function(data) {
                 location.reload()
             }
@@ -193,7 +198,7 @@
 
 
     //Получение данных выбранного проекта (для отображения в попапе)
-    function getProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority) {
+    function getProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority) {
         console.log("getProject Begin");   
 
         if ((event.target.id.includes("open_leadChange_popup")) || (event.target.id.includes("open_employeeDelete_popup")) || (event.target.id.includes("open_employee_popup"))) {
@@ -206,7 +211,8 @@
             document.getElementById("Title").value = Title;
             document.getElementById("CustomerCompany_Title").value = CustomerCompany_Title;
             document.getElementById("ExecutorCompany_Title").value = ExecutorCompany_Title;
-            document.getElementById("TimeFrame").value = TimeFrame;
+            document.getElementById("DtStart").value = DtStart;
+            document.getElementById("DtEnd").value = DtEnd;
             document.getElementById("Priority").value = Priority;
             document.getElementById('prjEditPopup').classList.add('active');
         }
@@ -215,17 +221,22 @@
 
     //Обработчик событий для кнопки сохранить в попапе проекта
     document.getElementById("AddBtn").addEventListener("click", async () => {
+        alert("AddBtn нажата!")
         const Id = document.getElementById("ProjectId").value;
         const Title = document.getElementById("Title").value;
         const CustomerCompany_Title = document.getElementById("CustomerCompany_Title").value;
         const ExecutorCompany_Title = document.getElementById("ExecutorCompany_Title").value;
-        const TimeFrame = document.getElementById("TimeFrame").value;
+        const DtStart = document.getElementById("DtStart").value;
+        const DtEnd = document.getElementById("DtEnd").value;
         const Priority = document.getElementById("Priority").value;
         if (Id === "") {
-            await Add(Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority);
+            alert("Вызов функции добавления проекта!")
+            alert(DtStart);
+            alert(DtEnd);
+            await Add(Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
         }
         else {
-            await Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, TimeFrame, Priority);
+            await Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
         }
 
     });
