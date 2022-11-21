@@ -16,7 +16,8 @@ namespace ProjectsManagement.Controllers
             ViewBag.CustomerNameSortParam = (sortOrder == "CustomerName") ? "CustomerName_desc" : "CustomerName";
             ViewBag.ExecutorNameSortParam = (sortOrder == "ExecutorName") ? "ExecutorName_desc" : "ExecutorName";
             ViewBag.LeadNameSortParam = (sortOrder == "LeadName") ? "LeadName_desc" : "LeadName";
-            ViewBag.TimeFrameSortParam = (sortOrder == "TimeFrame") ? "TimeFrame_desc" : "TimeFrame";
+            ViewBag.DtStartSortParam = (sortOrder == "DtStart") ? "DtStart_desc" : "DtStart";
+            ViewBag.DtEndSortParam = (sortOrder == "DtEnd") ? "DtEnd_desc" : "DtEnd";
             ViewBag.PrioritySortParam = (sortOrder == "Priority") ? "Priority_desc" : "Priority";
 
             IEnumerable<Project> Projects = ProjectsOperations.GetProjects();
@@ -26,18 +27,23 @@ namespace ProjectsManagement.Controllers
             {
                 case "ProjectName_desc":
                     Projects = Projects.OrderByDescending(prj => prj.Title);
+                    ViewBag.sortType = "Название проекта, по убыванию";
                     break;
                 case "CustomerName":
                     Projects = Projects.OrderBy(prj => prj.CustomerCompany_Title);
+                    ViewBag.sortType = "Компания-заказчик, по возрастанию";
                     break;
                 case "CustomerName_desc":
                     Projects = Projects.OrderByDescending(prj => prj.CustomerCompany_Title);
+                    ViewBag.sortType = "Компания-заказчик, по убыванию";
                     break;
                 case "ExecutorName":
                     Projects = Projects.OrderBy(prj => prj.ExecutorCompany_Title);
+                    ViewBag.sortType = "Компания-исполнитель, по возрастанию";
                     break;
                 case "ExecutorName_desc":
                     Projects = Projects.OrderByDescending(prj => prj.ExecutorCompany_Title);
+                    ViewBag.sortType = "Компания-исполнитель, по убыванию";
                     break;
                 
 
@@ -71,7 +77,7 @@ namespace ProjectsManagement.Controllers
                            prj_employee.LeadEmployeeId,
                            prj_employee.Priority
                            ));
-
+                    ViewBag.sortType = "Руководитель проекта, по возрастанию";
                     break;
 
                 case "LeadName_desc":
@@ -104,18 +110,39 @@ namespace ProjectsManagement.Controllers
                            prj_employee.LeadEmployeeId,
                            prj_employee.Priority
                            ));
+                    ViewBag.sortType = "Руководитель проекта, по убыванию";
                     break;
 
-
-                //Добавить сортировку по датам
                 case "Priority":
                     Projects = Projects.OrderBy(prj => prj.Priority);
+                    ViewBag.sortType = "Приоритет, по возрастанию";
                     break;
                 case "Priority_desc":
                     Projects = Projects.OrderByDescending(prj => prj.Priority);
+                    ViewBag.sortType = "Приоритет, по убыванию";
                     break;
+
+                case "DtStart":
+                    Projects = Projects.OrderBy(prj => prj.DtStart);
+                    ViewBag.sortType = "Дата начала проекта, по возрастанию";
+                    break;
+                case "DtStart_desc":
+                    Projects = Projects.OrderByDescending(prj => prj.DtStart);
+                    ViewBag.sortType = "Дата начала проекта, по убыванию";
+                    break;
+
+                case "DtEnd":
+                    Projects = Projects.OrderBy(prj => prj.DtStart);
+                    ViewBag.sortType = "Дата окончания проекта, по возрастанию";
+                    break;
+                case "DtEnd_desc":
+                    Projects = Projects.OrderByDescending(prj => prj.DtStart);
+                    ViewBag.sortType = "Дата окончания проекта, по убыванию";
+                    break;
+
                 default:
                     Projects = Projects.OrderBy(prj => prj.CustomerCompany_Title);
+                    ViewBag.sortType = "Название проекта, по возрастанию";
                     break;
             }
             return View(Projects.ToList());
@@ -132,7 +159,7 @@ namespace ProjectsManagement.Controllers
         /// <param name="Priority"></param>
         /// <returns></returns>
         [HttpPost]
-        public bool Add(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string? DtStart, string? DtEnd, int Priority)
+        public bool Add(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, DateTime? DtStart, DateTime? DtEnd, int Priority)
         {
             ProjectsOperations.AddProject(Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
             return true;
@@ -150,7 +177,7 @@ namespace ProjectsManagement.Controllers
         /// <param name="Priority"></param>
         /// <returns></returns>
         [HttpPost]
-        public bool Edit(string Id, string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string? DtStart, string? DtEnd, int Priority)
+        public bool Edit(string Id, string Title, string CustomerCompany_Title, string ExecutorCompany_Title, DateTime? DtStart, DateTime? DtEnd, int Priority)
         {
             ProjectsOperations.EditProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
             return true;

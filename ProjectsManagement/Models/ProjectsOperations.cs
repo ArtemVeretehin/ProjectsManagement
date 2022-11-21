@@ -23,7 +23,7 @@ namespace ProjectsManagement.Models
         /// <param name="ExecutorCompany_Title"></param>
         /// <param name="TimeFrame"></param>
         /// <param name="Priority"></param>
-        public async static void AddProject(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string? DtStart, string? DtEnd, int Priority)
+        public async static void AddProject(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, DateTime? DtStart, DateTime? DtEnd, int Priority)
         {
             using (Context context = new Context())
             {
@@ -41,7 +41,7 @@ namespace ProjectsManagement.Models
         /// <param name="ExecutorCompany_Title"></param>
         /// <param name="TimeFrame"></param>
         /// <param name="Priority"></param>
-        public async static void EditProject(string Id, string Title, string CustomerCompany_Title, string ExecutorCompany_Title, string? DtStart, string? DtEnd, int Priority)
+        public async static void EditProject(string Id, string Title, string CustomerCompany_Title, string ExecutorCompany_Title, DateTime? DtStart, DateTime? DtEnd, int Priority)
         {
             using (Context context = new Context())
             {
