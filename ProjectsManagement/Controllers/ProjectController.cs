@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjectsManagement.Models;
 namespace ProjectsManagement.Controllers
 {
@@ -10,7 +11,7 @@ namespace ProjectsManagement.Controllers
         }
 
 
-        public IActionResult ProjectsScreen(string sortOrder)
+        public IActionResult ProjectsScreen(string sortOrder, FilterObject filter)
         {
             ViewBag.ProjectNameSortParam = String.IsNullOrEmpty(sortOrder) ? "ProjectName_desc" : "";
             ViewBag.CustomerNameSortParam = (sortOrder == "CustomerName") ? "CustomerName_desc" : "CustomerName";
@@ -20,7 +21,11 @@ namespace ProjectsManagement.Controllers
             ViewBag.DtEndSortParam = (sortOrder == "DtEnd") ? "DtEnd_desc" : "DtEnd";
             ViewBag.PrioritySortParam = (sortOrder == "Priority") ? "Priority_desc" : "Priority";
 
+
+            
+
             IEnumerable<Project> Projects = ProjectsOperations.GetProjects();
+
 
             IEnumerable<Employee> LeadEmployees;
             switch (sortOrder)
@@ -45,7 +50,7 @@ namespace ProjectsManagement.Controllers
                     Projects = Projects.OrderByDescending(prj => prj.ExecutorCompany_Title);
                     ViewBag.sortType = "Компания-исполнитель, по убыванию";
                     break;
-                
+
 
                 case "LeadName":
 
@@ -81,7 +86,7 @@ namespace ProjectsManagement.Controllers
                     break;
 
                 case "LeadName_desc":
-                   
+
                     LeadEmployees = Projects.Select(prj => prj.Employees.Where(employe => employe.Id == prj.LeadEmployeeId).FirstOrDefault());
 
                     Projects = Projects.Join(LeadEmployees,
@@ -145,6 +150,14 @@ namespace ProjectsManagement.Controllers
                     ViewBag.sortType = "Название проекта, по возрастанию";
                     break;
             }
+
+
+            //Фильтрация
+            ViewBag.Filter = (filter is not null) ? filter : null;
+            Projects = filter.ProjectsFiltration(Projects);
+            
+
+
             return View(Projects.ToList());
         }
 
@@ -275,6 +288,22 @@ namespace ProjectsManagement.Controllers
             Employees = ProjectsOperations.GetEmployeesForLead(ProjectId);
 
             return PartialView(Employees);
+        }
+
+        public IActionResult ProjectsFiltrationSettingsView()
+        {
+            IEnumerable<Project> Projects = ProjectsOperations.GetProjects();
+
+            SelectList ProjectTitles = new SelectList(Projects.OrderBy(prj => prj.Title).Select(prj => prj.Title).Distinct().ToList());
+            SelectList CustomerTitles = new SelectList(Projects.OrderBy(prj => prj.CustomerCompany_Title).Select(prj => prj.CustomerCompany_Title).Distinct().ToList());
+            SelectList ExecutorTitles = new SelectList(Projects.OrderBy(prj => prj.ExecutorCompany_Title).Select(prj => prj.ExecutorCompany_Title).Distinct().ToList());
+
+            ViewBag.ProjectTitles = ProjectTitles;
+            ViewBag.CustomerTitles = CustomerTitles;
+            ViewBag.ExecutorTitles = ExecutorTitles;
+
+
+            return PartialView(Projects.ToList());
         }
     }
 }

@@ -1,0 +1,74 @@
+﻿@using ProjectsManagement.Models;
+@model List<Project>
+
+<html>
+<head>
+
+</head>
+
+<body>
+    <div class="popup" id="FilterSettings_popup">
+        <div class="popup_container">
+            <div class="popup_body" id="FilterSettings_popup_body">
+                
+
+                <form onsubmit="alert('submit!')" action="/Project/ProjectsScreen">
+            
+                    <label for="ProjectTitleFilter">По названию проекта</label>
+                    @Html.DropDownList("ProjectTitleFilter",ViewBag.ProjectTitles as SelectList, "")
+                    <br>
+
+                    <label for="CustomerTitleFilter">По названию заказчика</label>
+                    @Html.DropDownList("CustomerTitleFilter",ViewBag.CustomerTitles as SelectList, "")
+                    <br>
+
+                    <label for="ExecutorTitleFilter">По названию исполнителя</label>
+                    @Html.DropDownList("ExecutorTitleFilter",ViewBag.ExecutorTitles as SelectList, "")
+                    <br>
+
+                    <label>По дате начала</label>
+                    <label for="DtStartLeftFilter">От </label>
+                    <input id="DtStartLeftFilter" name="DtStartLeftFilter" type="date">
+                    <label for="DtStartRightFilter">До </label>
+                    <input id="DtStartRightFilter" name="DtStartRightFilter" type="date">
+                    <br>
+
+                    <label>По дате окончания</label>
+                    <label for="DtEndLeftFilter">От </label>
+                    <input id="DtEndLeftFilter" name="DtEndLeftFilter" type="date">
+                    <label for="DtEndRightFilter">До </label>
+                    <input id="DtEndRightFilter" name="DtEndRightFilter" type="date">
+                    <br>
+
+                    <label>По приоритету</label>
+                    <label for="PriorityLeftFilter">От</label>
+                    <input type="number" id="PriorityLeftFilter" name="PriorityLeftFilter">
+                    <label for="PriorityRightFilter">От</label>
+                    <input type="number" id="PriorityRightFilter" name="PriorityRightFilter">
+                    <br>
+
+                    <input type="submit" value="Отправить" />
+                </form>
+
+
+
+                <button id="ApplyFilterSettings">Применить</button>
+                <div class="popup_close" id="FilterSettings_popup_close">X</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+
+
+
+    //Обработчик события для кнопки закрытия попапа
+    document.getElementById('FilterSettings_popup_close').addEventListener('click', () => {
+        document.getElementById('FilterSettings_popup').classList.remove('active');
+    })
+
+
+</script>

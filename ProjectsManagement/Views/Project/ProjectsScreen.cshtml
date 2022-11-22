@@ -22,14 +22,22 @@
 
 <body>
     <input type="hidden" id="ProjectId" />
-    <input id="dataTest" type="date" name="dataTestName">
+
 
     <div class="button">
         <a href="#" id="open_popup">Создать проект</a>
     </div>
+    <div class="button">
+        <a href="#" id="open_FilterSettings_popup">Настройки фильтрации</a>
+    </div>
+
+    @Html.ActionLink("Сбросить настройки фильтрации","ProjectsScreen", new { sortOrder = ""})
+
     <div>
         Тип сортировки: @ViewBag.sortType
     </div>
+
+    @ViewBag.Filter.ProjectTitleFilter
 
     <!--Блок ниже - попап для ввода данных о проекте-->
     <div class="popup" id="prjEditPopup">
@@ -56,28 +64,120 @@
         <thead>
             <tr>
                 <th>
-                    @Html.ActionLink("Название","ProjectsScreen", new { sortOrder = ViewBag.ProjectNameSortParam})
+                    @Html.ActionLink("Название","ProjectsScreen", 
+                    new { 
+                        sortOrder = ViewBag.ProjectNameSortParam, 
+
+                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+
+                    })
                 </th>
                 <th>
-                    @Html.ActionLink("Компания - заказчик","ProjectsScreen", new { sortOrder = ViewBag.CustomerNameSortParam})
+                    @Html.ActionLink("Компания - заказчик","ProjectsScreen", new { 
+                        sortOrder = ViewBag.CustomerNameSortParam, 
+
+                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+
+                    })
                 </th>
                 <th>
-                    @Html.ActionLink("Компания - Исполнитель","ProjectsScreen", new { sortOrder = ViewBag.ExecutorNameSortParam})
+                    @Html.ActionLink("Компания - Исполнитель","ProjectsScreen", new { 
+                        sortOrder = ViewBag.ExecutorNameSortParam, 
+
+                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+
+                    })
                 </th>
                 <th>
                     @Html.ActionLink("Сотрудники проекта","ProjectsScreen", new { sortOrder = ViewBag.CustomerNameSortParam})
                 </th>
                 <th>
-                    @Html.ActionLink("Руководитель проекта","ProjectsScreen", new { sortOrder = ViewBag.LeadNameSortParam})
+                    @Html.ActionLink("Руководитель проекта","ProjectsScreen", new { 
+                        sortOrder = ViewBag.LeadNameSortParam, 
+
+                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+
+                    })
                 </th>
                 <th>
-                    @Html.ActionLink("Дата начала","ProjectsScreen", new { sortOrder = ViewBag.DtStartSortParam})
+                    @Html.ActionLink("Дата начала","ProjectsScreen", new { 
+                        sortOrder = ViewBag.DtStartSortParam, 
+
+                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+
+                    })
                 </th>
                 <th>
-                    @Html.ActionLink("Дата окончания","ProjectsScreen", new { sortOrder = ViewBag.DtEndSortParam})
+                    @Html.ActionLink("Дата окончания","ProjectsScreen", new { 
+                        sortOrder = ViewBag.DtEndSortParam, 
+
+                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+
+                    })
                 </th>
                 <th>
-                    @Html.ActionLink("Приоритет","ProjectsScreen", new { sortOrder = ViewBag.PrioritySortParam})
+                    @Html.ActionLink("Приоритет","ProjectsScreen", new { 
+                        sortOrder = ViewBag.PrioritySortParam, 
+
+                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+
+                    })
                 </th>
             </tr>
         </thead>
@@ -284,6 +384,15 @@
     document.getElementById('open_popup').addEventListener('click', function(e) {
         e.preventDefault();
         document.getElementById('prjEditPopup').classList.add('active');
+    })
+
+    //Обработчик события для открытия попапа настроек фильтрации
+    document.getElementById('open_FilterSettings_popup').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        $("#partialZone").load("/Project/ProjectsFiltrationSettingsView", () => {
+            document.getElementById('FilterSettings_popup').classList.add('active');
+        })
     })
 
 
