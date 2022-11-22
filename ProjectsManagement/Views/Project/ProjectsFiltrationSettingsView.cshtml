@@ -10,10 +10,10 @@
     <div class="popup" id="FilterSettings_popup">
         <div class="popup_container">
             <div class="popup_body" id="FilterSettings_popup_body">
-                
+
 
                 <form onsubmit="alert('submit!')" action="/Project/ProjectsScreen">
-            
+
                     <label for="ProjectTitleFilter">По названию проекта</label>
                     @Html.DropDownList("ProjectTitleFilter",ViewBag.ProjectTitles as SelectList, "")
                     <br>
@@ -50,9 +50,6 @@
                     <input type="submit" value="Отправить" />
                 </form>
 
-
-
-                <button id="ApplyFilterSettings">Применить</button>
                 <div class="popup_close" id="FilterSettings_popup_close">X</div>
             </div>
         </div>

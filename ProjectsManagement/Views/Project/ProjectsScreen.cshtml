@@ -49,19 +49,20 @@
                     <input id="ExecutorCompany_Title" type="text" placeholder="Компания - Исполнитель" />
                     <input id="DtStart" type="date">
                     <input id="DtEnd" type="date">
-                    <input id="Priority" type="text" placeholder="Приоритет" />
-                    <button id="AddBtn">Сохранить</button>
-                    <button id="DeleteButton">Удалить</button>
+                    <input id="Priority" type="number" placeholder="Приоритет" />
+                    <button type="button" id="AddBtn">Сохранить</button>
+                    <button type="button" id="DeleteButton">Удалить</button>
                 </form>
                 <div class="popup_close" id="prjEditPopup_close">X</div>
             </div>
         </div>
     </div>
-
+    <!---->
 
     <table>
         <thead>
             <tr>
+                <th>№</th>
                 <th>
                     @Html.ActionLink("Название","ProjectsScreen", 
                     new { 
@@ -188,7 +189,6 @@
                 string DtEndToString = "";
                 @if (Model[i].DtStart is not null)
                 {
-
                     DtStartToString = @Model[i].DtStart.Value.ToString("yyyy-MM-dd");
                 }
 
@@ -200,6 +200,7 @@
 
                 string getProjectArgument = $"{Model[i].Id},'{Model[i].Title}','{Model[i].CustomerCompany_Title}','{Model[i].ExecutorCompany_Title}','{DtStartToString}','{DtEndToString}','{Model[i].Priority}'";
                 <tr id=@($"prjRecord{Model[i].Id}") onclick="getProject(@getProjectArgument)">
+                    <td>@(i + 1)</td>
                     <td>@Model[i].Title</td>
                     <td>@Model[i].CustomerCompany_Title</td>
                     <td>@Model[i].ExecutorCompany_Title</td>
@@ -287,7 +288,6 @@
 
     //Добавление данных проекта в БД
     function Add(Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority) {
-        console.log("Add Begin");
         $.ajax({
             url: '/Project/Add',
             type: 'POST',
@@ -362,6 +362,10 @@
         const DtStart = document.getElementById("DtStart").value;
         const DtEnd = document.getElementById("DtEnd").value;
         const Priority = document.getElementById("Priority").value;
+
+
+        document.getElementById("ProjectId").value = "";
+
         if (Id === "") {
             await Add(Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
         }

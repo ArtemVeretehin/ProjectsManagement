@@ -48,6 +48,7 @@
     <table>
         <thead>
             <tr>
+                <th>№</th>
                 <th>Имя</th>
                 <th>Фамилия</th>
                 <th>Отчество</th>
@@ -60,6 +61,7 @@
             {
                 string getEmployeeArgument = $"{Model[i].Id},'{Model[i].FirstName}','{Model[i].SurName}','{Model[i].LastName}','{Model[i].Email}'";
                 <tr id="@Model[i].Id" onclick="getEmployee(@getEmployeeArgument)">
+                    <td>@(i+1)</td>
                     <td>@Model[i].FirstName</td>
                     <td>@Model[i].LastName</td>
                     <td>@Model[i].SurName</td>
@@ -117,7 +119,6 @@
 
     //Получение данных выбранного сотрудника и открытие в попапе
     function getEmployee(Id, FirstName, SurName, LastName, Email) {
-        console.log("getEmployee Begin");
         document.getElementById("EmployeeId").value = Id;
         document.getElementById("Name").value = FirstName;
         document.getElementById("SurName").value = SurName;

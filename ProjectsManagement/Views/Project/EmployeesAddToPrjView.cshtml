@@ -64,7 +64,6 @@
 
     //Функция добавления сотрудника в проект
     function Add(ProjectId) {
-        console.log("Add Begin");
         let SelectedEmployees = Array.from(document.querySelectorAll(".EmployeeRowSelected"));
         let SelectedEmployeesId = SelectedEmployees.map((elem) => elem.id);
         $.ajax({
@@ -79,11 +78,8 @@
     }
 
 
-
-
     //Функция проверки выбран сотрудник или нет
     function ActiveCheck() {
-
         const SelectedRow = event.currentTarget;
         if (SelectedRow.classList.contains('EmployeeRowSelected')) {
             SelectedRow.classList.remove('EmployeeRowSelected');

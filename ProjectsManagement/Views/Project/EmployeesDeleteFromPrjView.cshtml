@@ -58,7 +58,6 @@
 
     //Функция удаления сотрудника с проекта
     function Delete(ProjectId) {
-        console.log("Add Begin");
         let SelectedEmployees = Array.from(document.querySelectorAll(".EmployeeRowSelected"));
         let SelectedEmployeesId = SelectedEmployees.map((elem) => elem.id);
         $.ajax({
