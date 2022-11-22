@@ -11,152 +11,70 @@ namespace ProjectsManagement.Controllers
         }
 
 
-        public IActionResult ProjectsScreen(string sortOrder, FilterObject filter)
+        public IActionResult ProjectsScreen(FiltrationHandler filtrationHandler, SortingHandler sortingHandler)
         {
-            ViewBag.ProjectNameSortParam = String.IsNullOrEmpty(sortOrder) ? "ProjectName_desc" : "";
-            ViewBag.CustomerNameSortParam = (sortOrder == "CustomerName") ? "CustomerName_desc" : "CustomerName";
-            ViewBag.ExecutorNameSortParam = (sortOrder == "ExecutorName") ? "ExecutorName_desc" : "ExecutorName";
-            ViewBag.LeadNameSortParam = (sortOrder == "LeadName") ? "LeadName_desc" : "LeadName";
-            ViewBag.DtStartSortParam = (sortOrder == "DtStart") ? "DtStart_desc" : "DtStart";
-            ViewBag.DtEndSortParam = (sortOrder == "DtEnd") ? "DtEnd_desc" : "DtEnd";
-            ViewBag.PrioritySortParam = (sortOrder == "Priority") ? "Priority_desc" : "Priority";
+            ViewBag.ProjectNameSortParam = String.IsNullOrEmpty(sortingHandler.sortOrder) ? "ProjectName_desc" : "";
+            ViewBag.CustomerNameSortParam = (sortingHandler.sortOrder == "CustomerName") ? "CustomerName_desc" : "CustomerName";
+            ViewBag.ExecutorNameSortParam = (sortingHandler.sortOrder == "ExecutorName") ? "ExecutorName_desc" : "ExecutorName";
+            ViewBag.LeadNameSortParam = (sortingHandler.sortOrder == "LeadName") ? "LeadName_desc" : "LeadName";
+            ViewBag.DtStartSortParam = (sortingHandler.sortOrder == "DtStart") ? "DtStart_desc" : "DtStart";
+            ViewBag.DtEndSortParam = (sortingHandler.sortOrder == "DtEnd") ? "DtEnd_desc" : "DtEnd";
+            ViewBag.PrioritySortParam = (sortingHandler.sortOrder == "Priority") ? "Priority_desc" : "Priority";
 
-
-            
-
+           
             IEnumerable<Project> Projects = ProjectsOperations.GetProjects();
+    
 
+            //Фильтрация и сортировка
+            ViewBag.Filter = (filtrationHandler is not null) ? filtrationHandler : null;
+            Projects = filtrationHandler.ProjectsFiltration(Projects);
+            Projects = sortingHandler.ProjectsSorting(Projects);
 
-            IEnumerable<Employee> LeadEmployees;
-            switch (sortOrder)
+            switch (sortingHandler.sortOrder)
             {
-                case "ProjectName_desc":
-                    Projects = Projects.OrderByDescending(prj => prj.Title);
+                case "ProjectName_desc":            
                     ViewBag.sortType = "Название проекта, по убыванию";
                     break;
                 case "CustomerName":
-                    Projects = Projects.OrderBy(prj => prj.CustomerCompany_Title);
                     ViewBag.sortType = "Компания-заказчик, по возрастанию";
                     break;
                 case "CustomerName_desc":
-                    Projects = Projects.OrderByDescending(prj => prj.CustomerCompany_Title);
                     ViewBag.sortType = "Компания-заказчик, по убыванию";
                     break;
                 case "ExecutorName":
-                    Projects = Projects.OrderBy(prj => prj.ExecutorCompany_Title);
                     ViewBag.sortType = "Компания-исполнитель, по возрастанию";
                     break;
                 case "ExecutorName_desc":
-                    Projects = Projects.OrderByDescending(prj => prj.ExecutorCompany_Title);
                     ViewBag.sortType = "Компания-исполнитель, по убыванию";
                     break;
-
-
-                case "LeadName":
-
-                    LeadEmployees = Projects.Select(prj => prj.Employees.Where(employe => employe.Id == prj.LeadEmployeeId).FirstOrDefault());
-
-                    Projects = Projects.Join(LeadEmployees,
-                       prj => prj.LeadEmployeeId,
-                       leadEmployee => leadEmployee.Id,
-                       (prj, leadEmployee) => new
-                       {
-                           Title = prj.Title,
-                           CustomerCompany_Title = prj.CustomerCompany_Title,
-                           ExecutorCompany_Title = prj.ExecutorCompany_Title,
-                           DtStart = prj.DtStart,
-                           DtEnd = prj.DtEnd,
-                           Employees = prj.Employees,
-                           LeadEmployeeId = prj.LeadEmployeeId,
-                           Priority = prj.Priority,
-                           leadEmployee_lastName = leadEmployee.LastName
-                       })
-                       .OrderBy(prj_employee => prj_employee.leadEmployee_lastName)
-                       .Select(prj_employee => new Project(
-                           prj_employee.Title,
-                           prj_employee.CustomerCompany_Title,
-                           prj_employee.ExecutorCompany_Title,
-                           prj_employee.DtStart,
-                           prj_employee.DtEnd,
-                           prj_employee.Employees,
-                           prj_employee.LeadEmployeeId,
-                           prj_employee.Priority
-                           ));
+                case "LeadName": 
                     ViewBag.sortType = "Руководитель проекта, по возрастанию";
                     break;
-
                 case "LeadName_desc":
-
-                    LeadEmployees = Projects.Select(prj => prj.Employees.Where(employe => employe.Id == prj.LeadEmployeeId).FirstOrDefault());
-
-                    Projects = Projects.Join(LeadEmployees,
-                       prj => prj.LeadEmployeeId,
-                       leadEmployee => leadEmployee.Id,
-                       (prj, leadEmployee) => new
-                       {
-                           Title = prj.Title,
-                           CustomerCompany_Title = prj.CustomerCompany_Title,
-                           ExecutorCompany_Title = prj.ExecutorCompany_Title,
-                           DtStart = prj.DtStart,
-                           DtEnd = prj.DtEnd,
-                           Employees = prj.Employees,
-                           LeadEmployeeId = prj.LeadEmployeeId,
-                           Priority = prj.Priority,
-                           leadEmployee_lastName = leadEmployee.LastName
-                       })
-                       .OrderByDescending(prj_employee => prj_employee.leadEmployee_lastName)
-                       .Select(prj_employee => new Project(
-                           prj_employee.Title,
-                           prj_employee.CustomerCompany_Title,
-                           prj_employee.ExecutorCompany_Title,
-                           prj_employee.DtStart,
-                           prj_employee.DtEnd,
-                           prj_employee.Employees,
-                           prj_employee.LeadEmployeeId,
-                           prj_employee.Priority
-                           ));
                     ViewBag.sortType = "Руководитель проекта, по убыванию";
                     break;
-
-                case "Priority":
-                    Projects = Projects.OrderBy(prj => prj.Priority);
+                case "Priority": 
                     ViewBag.sortType = "Приоритет, по возрастанию";
                     break;
-                case "Priority_desc":
-                    Projects = Projects.OrderByDescending(prj => prj.Priority);
+                case "Priority_desc":     
                     ViewBag.sortType = "Приоритет, по убыванию";
                     break;
-
-                case "DtStart":
-                    Projects = Projects.OrderBy(prj => prj.DtStart);
+                case "DtStart":  
                     ViewBag.sortType = "Дата начала проекта, по возрастанию";
                     break;
-                case "DtStart_desc":
-                    Projects = Projects.OrderByDescending(prj => prj.DtStart);
+                case "DtStart_desc":   
                     ViewBag.sortType = "Дата начала проекта, по убыванию";
                     break;
-
-                case "DtEnd":
-                    Projects = Projects.OrderBy(prj => prj.DtStart);
+                case "DtEnd":                
                     ViewBag.sortType = "Дата окончания проекта, по возрастанию";
                     break;
-                case "DtEnd_desc":
-                    Projects = Projects.OrderByDescending(prj => prj.DtStart);
+                case "DtEnd_desc":       
                     ViewBag.sortType = "Дата окончания проекта, по убыванию";
                     break;
-
-                default:
-                    Projects = Projects.OrderBy(prj => prj.CustomerCompany_Title);
+                default:                   
                     ViewBag.sortType = "Название проекта, по возрастанию";
                     break;
             }
-
-
-            //Фильтрация
-            ViewBag.Filter = (filter is not null) ? filter : null;
-            Projects = filter.ProjectsFiltration(Projects);
-            
-
 
             return View(Projects.ToList());
         }

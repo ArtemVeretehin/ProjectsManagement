@@ -1,8 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
-@using ProjectsManagement.Models;
+﻿sing ProjectsManagement.Models;
 @model List<Employee>;
 @{
 }
@@ -41,7 +37,7 @@
                     <input id="SurName" type="text" placeholder="Отчество" />
                     <input id="LastName" type="text" placeholder="Фамилия" />
                     <input id="Email" type="text" placeholder="Email" />
-                    <button id="AddBtn">Сохранить</button>
+                    <button type="button" id="AddBtn">Сохранить</button>
                     <button id="DeleteButton">Удалить</button>
                 </form>
                 <div class="popup_close" id="popup_close">X</div>
@@ -81,45 +77,39 @@
 
     //Добавление данных сотрудника в БД
     function Add(FirstName, SurName, LastName, Email) {
-        console.log("Add Begin");
         $.ajax({
             url: '/Employee/Add',
             type: 'POST',
             async: false,
             data: { FirstName: FirstName, SurName: SurName, LastName: LastName, Email: Email },
             success: function(data) {
-                console.log(result);
-                alert("Result is" + result)
+                location.reload()
             }
         });
     }
 
     //Изменение данных сотрудника в БД
     function Edit(Id, FirstName, SurName, LastName, Email) {
-        console.log("Edit Begin");
         $.ajax({
             url: '/Employee/Edit',
             type: 'POST',
             async: false,
             data: { Id: Id, FirstName: FirstName, SurName: SurName, LastName: LastName, Email: Email },
             success: function(data) {
-                console.log(result);
-                alert("Result is" + result)
+                location.reload()
             }
         });
     }
 
     //Удаление данных сотрудника из БД
     function Delete(Id, FirstName, SurName, LastName, Email) {
-        console.log("Edit Begin");
         $.ajax({
             url: '/Employee/Delete',
             type: 'POST',
             async: false,
             data: { Id: Id },
             success: function(data) {
-                console.log(result);
-                alert("Result is" + result)
+                location.reload()
             }
         });
     }
@@ -138,13 +128,28 @@
 
 
     //Обработчик событий для кнопки сохранить в попапе
-    document.getElementById("AddBtn").addEventListener("click", async () => {
+    document.getElementById("AddBtn").addEventListener("click", async() => {
         const Id = document.getElementById("EmployeeId").value;
-        document.getElementById("EmployeeId").value = "";
         const FirstName = document.getElementById("Name").value;
         const SurName = document.getElementById("SurName").value;
         const LastName = document.getElementById("LastName").value;
         const Email = document.getElementById("Email").value;
+
+        let EmployeeNamePattern = /^[a-zA-Zа-яА-ЯёЁ'][a-zA-Z-а-яА-ЯёЁ' ]+[a-zA-Zа-яА-ЯёЁ']?$/    
+        let EmployeeEmailPattern = /^[^\s@('@')]+@('@')[^\s@('@')]+\.[^\s@('@')]+$/
+
+        if (!EmployeeNamePattern.test(FirstName) || !EmployeeNamePattern.test(SurName) || !EmployeeNamePattern.test(LastName)) {
+            alert("Проверьте что корректно введены имя, отчество, фамилия сотрудника!")
+            return
+        }
+
+        if (!EmployeeEmailPattern.test(Email)) {
+            alert("Введите корректный Email сотрудника!")
+            return
+        }
+   
+        document.getElementById("EmployeeId").value = "";
+
         if (Id === "") {
             await Add(FirstName, SurName, LastName, Email);
         }
