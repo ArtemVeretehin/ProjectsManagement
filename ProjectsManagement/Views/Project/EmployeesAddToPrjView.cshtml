@@ -9,24 +9,34 @@
 <body>
     <div class="popup" id="employee_popup">
         <div class="popup_container">
-            <div class="popup_body" id="popup_body">
-
+            <div class="popup_body for_employee" id="popup_body">
+                <p>Добавить сотрудника в проект</p>
                 @if (Model.Count != 0)
                 {
-                    <table>
-                        <tbody>
-                            @for (int i = 0; i < Model.Count; i++)
-                            {
-                                string getEmployeeArgument = $"{Model[i].Id},'{Model[i].FirstName}','{Model[i].SurName}','{Model[i].LastName}','{Model[i].Email}'";
-                                <tr id="@Model[i].Id" onclick="ActiveCheck()">
-                                    <td>@Model[i].FirstName</td>
-                                    <td>@Model[i].LastName</td>
-                                    <td>@Model[i].SurName</td>
-                                    <td>@Model[i].Email</td>
+                    <div class="table_holder">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Имя</th>
+                                    <th>Отчество</th>
+                                    <th>Фамилия</th>
+                                    <th>Email</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count; i++)
+                                {
+                                    string getEmployeeArgument = $"{Model[i].Id},'{Model[i].FirstName}','{Model[i].SurName}','{Model[i].LastName}','{Model[i].Email}'";
+                                    <tr id="@Model[i].Id" onclick="ActiveCheck()">
+                                        <td>@Model[i].FirstName</td>
+                                        <td>@Model[i].SurName</td>
+                                        <td>@Model[i].LastName</td>
+                                        <td>@Model[i].Email</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 }
                 else
                 {
@@ -34,7 +44,7 @@
                 }
 
                 <button id="AddEmployees">Сохранить</button>
-                <div class="popup_close" id="employee_popup_close">X</div>
+                <div class="popup_close" id="employee_popup_close">&#10006</div>
             </div>
         </div>
     </div>
@@ -54,12 +64,6 @@
         const ProjectId = document.getElementById("ProjectId").value;
         await Add(ProjectId);
     });
-
-    document.getElementById("DeleteEmployees").addEventListener("click", async () => {
-        const ProjectId = document.getElementById("ProjectId").value;
-        await Delete(ProjectId);
-    })
-
 
 
     //Функция добавления сотрудника в проект

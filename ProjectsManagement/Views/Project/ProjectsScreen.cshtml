@@ -1,6 +1,6 @@
-﻿@using ProjectsManagement.Models;
-@model List<Project>;
+﻿@model List<Project>;
 @{
+    Layout = "/Views/Shared/_Layout.cshtml";
 }
 
 <style>
@@ -13,7 +13,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Сотрудники компании</title>
+    <title>Проекты компании</title>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="~/css/Table.css" />
 </head>
@@ -31,18 +31,20 @@
         <a href="#" id="open_FilterSettings_popup">Настройки фильтрации</a>
     </div>
 
-    @Html.ActionLink("Сбросить настройки фильтрации","ProjectsScreen", new { sortOrder = ""})
-
-    <div>
-        Тип сортировки: @ViewBag.sortType
+    <div class="button">
+        @Html.ActionLink("Сбросить настройки фильтрации","ProjectsScreen", new { sortOrder = ""})
     </div>
+    <br clear="all" />
+    <p>
+        Тип сортировки: @ViewBag.sortType
+    </p>
 
 
     <!--Блок ниже - попап для ввода данных о проекте-->
     <div class="popup" id="prjEditPopup">
         <div class="popup_container">
             <div class="popup_body" id="prjEditPopup_body">
-                <p>Оставить заказ</p>
+                <p id="prjedit_popup_title">Изменение данных проекта</p>
                 <form action="">
                     <input id="Title" type="text" placeholder="Название" />
                     <input id="CustomerCompany_Title" type="text" placeholder="Компания - Заказчик" />
@@ -51,9 +53,9 @@
                     <input id="DtEnd" type="date">
                     <input id="Priority" type="number" placeholder="Приоритет" />
                     <button type="button" id="AddBtn">Сохранить</button>
-                    <button type="button" id="DeleteButton">Удалить</button>
+                    <button class="delete" type="button" id="DeleteButton">Удалить</button>
                 </form>
-                <div class="popup_close" id="prjEditPopup_close">X</div>
+                <div class="popup_close" id="prjEditPopup_close">&#10006</div>
             </div>
         </div>
     </div>
@@ -64,120 +66,127 @@
             <tr>
                 <th>№</th>
                 <th>
-                    @Html.ActionLink("Название","ProjectsScreen", 
-                    new { 
-                        sortOrder = ViewBag.ProjectNameSortParam, 
+                    @Html.ActionLink("Название","ProjectsScreen",
+                    new {
+                    sortOrder = ViewBag.ProjectNameSortParam,
 
-                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
-                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
-                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
-                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
-                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
-                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
-                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
-                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
-                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+                    ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                    CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                    ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                    DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                    DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                    DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                    DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                    PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                    PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
 
-                    })
+                    },
+                    new { @class = "custom_link"})
                 </th>
                 <th>
-                    @Html.ActionLink("Компания - заказчик","ProjectsScreen", new { 
-                        sortOrder = ViewBag.CustomerNameSortParam, 
+                    @Html.ActionLink("Заказчик","ProjectsScreen", new {
+                    sortOrder = ViewBag.CustomerNameSortParam,
 
-                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
-                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
-                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
-                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
-                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
-                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
-                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
-                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
-                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+                    ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                    CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                    ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                    DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                    DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                    DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                    DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                    PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                    PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
 
-                    })
+                    },
+                    new { @class = "custom_link"})
                 </th>
                 <th>
-                    @Html.ActionLink("Компания - Исполнитель","ProjectsScreen", new { 
-                        sortOrder = ViewBag.ExecutorNameSortParam, 
+                    @Html.ActionLink("Исполнитель","ProjectsScreen", new {
+                    sortOrder = ViewBag.ExecutorNameSortParam,
 
-                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
-                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
-                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
-                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
-                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
-                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
-                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
-                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
-                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+                    ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                    CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                    ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                    DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                    DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                    DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                    DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                    PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                    PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
 
-                    })
+                    },
+                    new { @class = "custom_link"})
                 </th>
                 <th>
-                    @Html.ActionLink("Сотрудники проекта","ProjectsScreen", new { sortOrder = ViewBag.CustomerNameSortParam})
+                    Сотрудники проекта
                 </th>
                 <th>
-                    @Html.ActionLink("Руководитель проекта","ProjectsScreen", new { 
-                        sortOrder = ViewBag.LeadNameSortParam, 
+                    @Html.ActionLink("Руководитель проекта","ProjectsScreen", new {
+                    sortOrder = ViewBag.LeadNameSortParam,
 
-                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
-                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
-                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
-                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
-                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
-                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
-                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
-                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
-                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+                    ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                    CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                    ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                    DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                    DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                    DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                    DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                    PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                    PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
 
-                    })
+                    },
+                    new { @class = "custom_link"})
                 </th>
                 <th>
-                    @Html.ActionLink("Дата начала","ProjectsScreen", new { 
-                        sortOrder = ViewBag.DtStartSortParam, 
+                    @Html.ActionLink("Дата начала","ProjectsScreen", new {
+                    sortOrder = ViewBag.DtStartSortParam,
 
-                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
-                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
-                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
-                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
-                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
-                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
-                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
-                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
-                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+                    ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                    CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                    ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                    DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                    DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                    DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                    DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                    PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                    PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
 
-                    })
+                    },
+                    new { @class = "custom_link"})
                 </th>
                 <th>
-                    @Html.ActionLink("Дата окончания","ProjectsScreen", new { 
-                        sortOrder = ViewBag.DtEndSortParam, 
+                    @Html.ActionLink("Дата окончания","ProjectsScreen", new {
+                    sortOrder = ViewBag.DtEndSortParam,
 
-                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
-                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
-                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
-                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
-                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
-                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
-                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
-                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
-                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+                    ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                    CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                    ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                    DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                    DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                    DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                    DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                    PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                    PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
 
-                    })
+                    },
+                    new { @class = "custom_link"})
                 </th>
                 <th>
-                    @Html.ActionLink("Приоритет","ProjectsScreen", new { 
-                        sortOrder = ViewBag.PrioritySortParam, 
+                    @Html.ActionLink("Приоритет","ProjectsScreen", new {
+                    sortOrder = ViewBag.PrioritySortParam,
 
-                        ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
-                        CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
-                        ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
-                        DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
-                        DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
-                        DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
-                        DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
-                        PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
-                        PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
+                    ProjectTitleFilter = ViewBag.Filter.ProjectTitleFilter,
+                    CustomerTitleFilter = ViewBag.Filter.CustomerTitleFilter,
+                    ExecutorTitleFilter = ViewBag.Filter.ExecutorTitleFilter,
+                    DtStartLeftFilter = ViewBag.Filter.DtStartLeftFilter,
+                    DtStartRightFilter = ViewBag.Filter.DtStartRightFilter,
+                    DtEndLeftFilter = ViewBag.Filter.DtEndLeftFilter,
+                    DtEndRightFilter = ViewBag.Filter.DtEndRightFilter,
+                    PriorityLeftFilter = ViewBag.Filter.PriorityLeftFilter,
+                    PriorityRightFilter = ViewBag.Filter.PriorityRightFilter
 
-                    })
+                    },
+                    new { @class = "custom_link"})
                 </th>
             </tr>
         </thead>
@@ -197,29 +206,32 @@
                     DtEndToString = @Model[i].DtEnd.Value.ToString("yyyy-MM-dd");
                 }
 
-
                 string getProjectArgument = $"{Model[i].Id},'{Model[i].Title}','{Model[i].CustomerCompany_Title}','{Model[i].ExecutorCompany_Title}','{DtStartToString}','{DtEndToString}','{Model[i].Priority}'";
                 <tr id=@($"prjRecord{Model[i].Id}") onclick="getProject(@getProjectArgument)">
                     <td>@(i + 1)</td>
                     <td>@Model[i].Title</td>
                     <td>@Model[i].CustomerCompany_Title</td>
                     <td>@Model[i].ExecutorCompany_Title</td>
-                    <td>
-                        @foreach (var employee in Model[i].Employees)
-                        {
-                            @employee.FirstName @employee.SurName @employee.LastName
-                            <br>
+                    <td class="nowrap">
+                        @{
+                            int employeeIndex = 1;
+                            foreach (var employee in Model[i].Employees)
+                            {
+                                    @($"{employeeIndex++}.{employee.FirstName} {employee.SurName} {employee.LastName}")
+                               
+                                    <br>
+                            }
                         }
-                        <div class="button">
-                            <a href="#" id=@($"open_employee_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, false)">Добавить</a>
-                            <a href="#" id=@($"open_employeeDelete_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, false)">Удалить</a>
+                        <div>
+                            <a href="#" id=@($"open_employee_popup{Model[i].Id}") class="custom_link" onclick="loadEmployeePopup(event,@Model[i].Id, false)">Добавить</a>
+                            <a href="#" id=@($"open_employeeDelete_popup{Model[i].Id}") class="custom_link" onclick="loadEmployeePopup(event,@Model[i].Id, false)">Удалить</a>
                         </div>
                     </td>
                     <td>
                         @Model[i].Employees.Where(employee => employee.Id == @Model[i].LeadEmployeeId).Select(employee => $"{$"{employee.FirstName} {employee.SurName} {employee.LastName}"}").FirstOrDefault()
 
-                        <div class="button">
-                            <a href="#" id=@($"open_leadChange_popup{Model[i].Id}") onclick="loadEmployeePopup(event,@Model[i].Id, true)">Выбрать руководителя</a>
+                        <div>
+                            <a href="#" id=@($"open_leadChange_popup{Model[i].Id}") class="custom_link" onclick="loadEmployeePopup(event,@Model[i].Id, true)">Выбрать руководителя</a>
                         </div>
                     </td>
 
@@ -230,7 +242,7 @@
                     }
                     else
                     {
-                        <td>@Model[i].DtStart.Value.ToString("dd-MM-yyyy")</td>
+                        <td class="nowrap">@Model[i].DtStart.Value.ToString("dd-MM-yyyy")</td>
                     }
 
                     @if (Model[i].DtEnd is null)
@@ -239,10 +251,8 @@
                     }
                     else
                     {
-                        <td>@Model[i].DtEnd.Value.ToString("dd-MM-yyyy")</td>
+                        <td class="nowrap">@Model[i].DtEnd.Value.ToString("dd-MM-yyyy")</td>
                     }
-
-
 
                     <td>@Model[i].Priority</td>
                 </tr>
@@ -330,9 +340,6 @@
     }
 
 
-
-
-
     //Получение данных выбранного проекта (для отображения в попапе)
     function getProject(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority) {
         console.log("getProject Begin");
@@ -363,7 +370,6 @@
         const DtEnd = document.getElementById("DtEnd").value;
         const Priority = document.getElementById("Priority").value;
 
-
         document.getElementById("ProjectId").value = "";
 
         if (Id === "") {
@@ -372,7 +378,6 @@
         else {
             await Edit(Id, Title, CustomerCompany_Title, ExecutorCompany_Title, DtStart, DtEnd, Priority);
         }
-
     });
 
 
@@ -386,6 +391,8 @@
     //Обработчик события для открытия попапа проекта
     document.getElementById('open_popup').addEventListener('click', function(e) {
         e.preventDefault();
+        document.getElementById('prjedit_popup_title').textContent = "Добавление проекта";
+        document.getElementById('prjEditPopup_body').classList.add("for_add_info");
         document.getElementById('prjEditPopup').classList.add('active');
     })
 
@@ -409,6 +416,8 @@
         document.getElementById("DtStart").value = "";
         document.getElementById("DtEnd").value = "";
         document.getElementById("Priority").value = "";
+        document.getElementById('prjEditPopup_body').classList.remove("for_add_info");
+        document.getElementById('prjedit_popup_title').textContent = "Изменение данных проекта";
     })
 
 

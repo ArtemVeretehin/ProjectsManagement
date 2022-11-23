@@ -1,13 +1,9 @@
-﻿sing ProjectsManagement.Models;
-@model List<Employee>;
+﻿@model List<Employee>;
+
 @{
+    Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-    .selected {
-        background: silver;
-    }
-</style>
 
 <html>
 <head>
@@ -16,6 +12,7 @@
     <title>Сотрудники компании</title>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="~/css/Table.css" />
+    
 </head>
 
 
@@ -25,33 +22,34 @@
 
 
     <div class="button">
-        <a href="#" id="open_popup">Заявка</a>
+        <a href="#" id="open_popup">Добавить сотрудника</a>
     </div>
-
+    <br clear="all" />
+    
     <div class="popup" id="popup">
         <div class="popup_container">
             <div class="popup_body" id="popup_body">
-                <p>Оставить заказ</p>
+                <p id="popup_title">Изменение данных сотрудника</p>
                 <form action="">
                     <input id="Name" type="text" placeholder="Имя" />
                     <input id="SurName" type="text" placeholder="Отчество" />
                     <input id="LastName" type="text" placeholder="Фамилия" />
                     <input id="Email" type="text" placeholder="Email" />
                     <button type="button" id="AddBtn">Сохранить</button>
-                    <button id="DeleteButton">Удалить</button>
+                    <button class="delete" type= "button" id="DeleteButton">Удалить</button>
                 </form>
-                <div class="popup_close" id="popup_close">X</div>
+                <div class="popup_close" id="popup_close">&#10006</div>
             </div>
         </div>
     </div>
-
+    <div>
     <table>
         <thead>
             <tr>
                 <th>№</th>
                 <th>Имя</th>
-                <th>Фамилия</th>
                 <th>Отчество</th>
+                <th>Фамилия</th>
                 <th>Email</th>
             </tr>
         </thead>
@@ -63,14 +61,14 @@
                 <tr id="@Model[i].Id" onclick="getEmployee(@getEmployeeArgument)">
                     <td>@(i+1)</td>
                     <td>@Model[i].FirstName</td>
-                    <td>@Model[i].LastName</td>
                     <td>@Model[i].SurName</td>
+                    <td>@Model[i].LastName</td>
                     <td>@Model[i].Email</td>
                 </tr>
             }
         </tbody>
     </table>
-
+    </div>
 </body>
 
 </html>
@@ -171,6 +169,8 @@
     //Обработчик события для открытия попапа
     document.getElementById('open_popup').addEventListener('click', function(e) {
         e.preventDefault();
+        document.getElementById('popup_title').textContent = "Добавление сотрудника";
+        document.getElementById('popup_body').classList.add("for_add_info");
         document.getElementById('popup').classList.add('active');
     })
 
@@ -183,6 +183,8 @@
         document.getElementById("SurName").value = "";
         document.getElementById("LastName").value = "";
         document.getElementById("Email").value = "";
+        document.getElementById('popup_title').textContent = "Изменение данных сотрудника";
+        document.getElementById("popup_body").classList.remove("for_add_info");
     })
 
 </script>

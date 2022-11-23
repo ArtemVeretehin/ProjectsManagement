@@ -10,7 +10,7 @@
     <div class="popup" id="FilterSettings_popup">
         <div class="popup_container">
             <div class="popup_body" id="FilterSettings_popup_body">
-
+                <p>Новый фильтр проектов</p>
 
                 <form onsubmit="alert('submit!')" action="/Project/ProjectsScreen">
 
@@ -27,6 +27,7 @@
                     <br>
 
                     <label>По дате начала</label>
+                    <br />
                     <label for="DtStartLeftFilter">От </label>
                     <input id="DtStartLeftFilter" name="DtStartLeftFilter" type="date">
                     <label for="DtStartRightFilter">До </label>
@@ -34,6 +35,7 @@
                     <br>
 
                     <label>По дате окончания</label>
+                    <br />
                     <label for="DtEndLeftFilter">От </label>
                     <input id="DtEndLeftFilter" name="DtEndLeftFilter" type="date">
                     <label for="DtEndRightFilter">До </label>
@@ -41,16 +43,17 @@
                     <br>
 
                     <label>По приоритету</label>
+                    <br />
                     <label for="PriorityLeftFilter">От</label>
                     <input type="number" id="PriorityLeftFilter" name="PriorityLeftFilter">
-                    <label for="PriorityRightFilter">От</label>
+                    <label for="PriorityRightFilter">До</label>
                     <input type="number" id="PriorityRightFilter" name="PriorityRightFilter">
                     <br>
 
                     <input type="submit" value="Отправить" />
                 </form>
 
-                <div class="popup_close" id="FilterSettings_popup_close">X</div>
+                <div class="popup_close" id="FilterSettings_popup_close">&#10006</div>
             </div>
         </div>
     </div>
