@@ -217,9 +217,9 @@
                             int employeeIndex = 1;
                             foreach (var employee in Model[i].Employees)
                             {
-                                    @($"{employeeIndex++}.{employee.FirstName} {employee.SurName} {employee.LastName}")
+                                                        @($"{employeeIndex++}.{employee.FirstName} {employee.SurName} {employee.LastName}")
                                
-                                    <br>
+                                                        <br>
                             }
                         }
                         <div>
@@ -370,6 +370,10 @@
         const DtEnd = document.getElementById("DtEnd").value;
         const Priority = document.getElementById("Priority").value;
 
+        if ((DtEnd!="") && (DtStart > DtEnd)) {
+            alert("Дата окончания проекта не может быть меньше даты начала!");
+            return;
+        }
         document.getElementById("ProjectId").value = "";
 
         if (Id === "") {
