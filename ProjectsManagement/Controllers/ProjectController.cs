@@ -10,9 +10,15 @@ namespace ProjectsManagement.Controllers
             return View();
         }
 
-
+        /// <summary>
+        /// Метод контроллера, возвращающий вкладку для работы с проектами
+        /// </summary>
+        /// <param name="filtrationHandler"></param>
+        /// <param name="sortingHandler"></param>
+        /// <returns></returns>
         public IActionResult ProjectsScreen(FiltrationHandler filtrationHandler, SortingHandler sortingHandler)
         {
+            //Установка параметров сортировки при следующем вызове метода
             ViewBag.ProjectNameSortParam = String.IsNullOrEmpty(sortingHandler.sortOrder) ? "ProjectName_desc" : "";
             ViewBag.CustomerNameSortParam = (sortingHandler.sortOrder == "CustomerName") ? "CustomerName_desc" : "CustomerName";
             ViewBag.ExecutorNameSortParam = (sortingHandler.sortOrder == "ExecutorName") ? "ExecutorName_desc" : "ExecutorName";
@@ -30,6 +36,7 @@ namespace ProjectsManagement.Controllers
             Projects = filtrationHandler.ProjectsFiltration(Projects);
             Projects = sortingHandler.ProjectsSorting(Projects);
 
+            //Установка текущих параметров сортировки
             switch (sortingHandler.sortOrder)
             {
                 case "ProjectName_desc":            
@@ -80,7 +87,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Функция добавления проекта в БД
+        /// Метод контроллера, инициилизирующий добавление проекта в БД
         /// </summary>
         /// <param name="Title"></param>
         /// <param name="CustomerCompany_Title"></param>
@@ -97,7 +104,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Функция редактирования проекта в БД
+        /// Метод контроллера, инициилизирующий редактирование данных проекта в БД
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="Title"></param>
@@ -115,7 +122,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Функция удаления проекта в БД
+        /// Метод контроллера, инициилизирующий удаление данных проекта из БД
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -127,7 +134,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Функция добавления сотрудников в проект (с обновлением в БД)
+        /// Метод контроллера, инициилизирующий добавление сотрудников в проект (с обновлением в БД)
         /// </summary>
         /// <param name="SelectedEmployeesId"></param>
         /// <param name="ProjectId"></param>
@@ -140,7 +147,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Функция удаления сотрудников с проекта (с обновлением в БД)
+        /// Метод контроллера, инициилизирующий удаление сотрудников с проекта (с обновлением в БД)
         /// </summary>
         /// <param name="SelectedEmployeesId"></param>
         /// <param name="ProjectId"></param>
@@ -153,7 +160,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Функция изменения руководителя проекта (с обновлением в БД)
+        /// Метод контроллера, инициилизирующий изменение руководителя проекта (с обновлением в БД)
         /// </summary>
         /// <param name="SelectedEmployeesId"></param>
         /// <param name="ProjectId"></param>
@@ -167,7 +174,7 @@ namespace ProjectsManagement.Controllers
 
 
         /// <summary>
-        /// Генерация частичного View-попапа для добавления сотрудников в проект
+        /// Метод контроллера, генерирующий частичное представление (попап для добавления сотрудников в проект)
         /// </summary>
         /// <param name="ProjectId"></param>
         /// <returns></returns>
@@ -181,7 +188,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Генерация частичного View-попапа для удаления сотрудников с проекта
+        /// Метод контроллера, генерирующий частичное представление (попап для удаления сотрудников с проекта)
         /// </summary>
         /// <param name="ProjectId"></param>
         /// <returns></returns>
@@ -195,7 +202,7 @@ namespace ProjectsManagement.Controllers
         }
 
         /// <summary>
-        /// Генерация частичного View-попапа для назначения руководителя проекта
+        /// Метод контроллера, генерирующий частичное представление (попап для назначения руководителя проекта)
         /// </summary>
         /// <param name="ProjectId"></param>
         /// <returns></returns>
@@ -208,6 +215,10 @@ namespace ProjectsManagement.Controllers
             return PartialView(Employees);
         }
 
+        /// <summary>
+        /// Метод контроллера, генерирующий частичное представление (попап с настройками фильтрации)
+        /// </summary>
+        /// <returns></returns>
         public IActionResult ProjectsFiltrationSettingsView()
         {
             IEnumerable<Project> Projects = ProjectsOperations.GetProjects();

@@ -12,7 +12,7 @@
             <div class="popup_body" id="FilterSettings_popup_body">
                 <p>Новый фильтр проектов</p>
 
-                <form onsubmit="alert('submit!')" action="/Project/ProjectsScreen">
+                <form action="/Project/ProjectsScreen">
 
                     <label for="ProjectTitleFilter">По названию проекта</label>
                     @Html.DropDownList("ProjectTitleFilter",ViewBag.ProjectTitles as SelectList, "")

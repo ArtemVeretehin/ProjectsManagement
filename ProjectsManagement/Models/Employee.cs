@@ -1,6 +1,8 @@
-﻿
-namespace ProjectsManagement.Models
+﻿namespace ProjectsManagement.Models
 {
+    /// <summary>
+    /// Класс, представляющий сотрудника компании
+    /// </summary>
     public class Employee
     {
         public int Id { get; set; }

@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 namespace ProjectsManagement.Models
 {
+    /// <summary>
+    /// Класс-обработчик событий, связанных с проектами
+    /// </summary>
     public class ProjectsOperations
     {
         /// <summary>
-        /// Функция для получения списка проектов
+        /// Метод для получения списка проектов из БД
         /// </summary>
         /// <returns></returns>
         public static List<Project> GetProjects()
@@ -16,7 +19,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Функция для добавления нового проекта в БД
+        /// Метод для добавления нового проекта в БД
         /// </summary>
         /// <param name="Title"></param>
         /// <param name="CustomerCompany_Title"></param>
@@ -33,7 +36,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Функция для изменения данных проекта в БД
+        /// Метод для изменения данных проекта в БД
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="Title"></param>
@@ -53,7 +56,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Функция для удаления проекта из БД
+        /// Метод для удаления проекта из БД
         /// </summary>
         /// <param name="Id"></param>
         public async static void DeleteProject(string Id)
@@ -67,7 +70,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Функция для добавления сотрудника на проект (с изменением БД)
+        /// Метод для добавления сотрудника на проект (с изменением БД)
         /// </summary>
         /// <param name="EmployeesId"></param>
         /// <param name="ProjectId"></param>
@@ -81,7 +84,6 @@ namespace ProjectsManagement.Models
                 foreach (var employee in SelectedEmployees)
                 {
                     TargetProject.Employees.Add(employee);
-                    //employee.Projects.Add(TargetProject);
                 }
 
                 await context.SaveChangesAsync();
@@ -89,7 +91,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Функция для удаления сотрудника с проекта (с изменением БД)
+        /// Метод для удаления сотрудника с проекта (с изменением БД)
         /// </summary>
         /// <param name="EmployeesId"></param>
         /// <param name="ProjectId"></param>
@@ -112,7 +114,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Функция для удаления сотрудника с проекта (с изменением БД)
+        /// Метод для удаления сотрудника с проекта (с изменением БД)
         /// </summary>
         /// <param name="EmployeesId"></param>
         /// <param name="ProjectId"></param>
@@ -127,7 +129,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Получение списка сотрудников, которые могут быть добавлены на проект
+        /// Метод для получения списка сотрудников, которые могут быть добавлены на проект
         /// </summary>
         /// <param name="ProjectId"></param>
         /// <returns></returns>
@@ -150,7 +152,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Получение списка сотрудников, которые могут быть назначены руководителем проекта (все сотрудники на проекте, кроме текущего руководителя)
+        /// Метод для получения списка сотрудников, которые могут быть назначены руководителем проекта (все сотрудники на проекте, кроме текущего руководителя)
         /// </summary>
         /// <param name="ProjectId"></param>
         /// <returns></returns>
@@ -178,7 +180,7 @@ namespace ProjectsManagement.Models
         }
 
         /// <summary>
-        /// Получения полного списка сотрудников на проекте
+        /// Метод для получения полного списка сотрудников на проекте
         /// </summary>
         /// <param name="ProjectId"></param>
         /// <returns></returns>

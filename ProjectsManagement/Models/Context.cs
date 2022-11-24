@@ -1,9 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 namespace ProjectsManagement.Models
 {
-    public class Context: DbContext
+    public class Context : DbContext
     {
         public Context() => Database.EnsureCreated();
+
+        public Context(DbContextOptions optionsBuilder)
+        {
+            Database.EnsureCreated();
+        }
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<Employee> Employees { get; set; }

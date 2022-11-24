@@ -1,5 +1,8 @@
 ﻿namespace ProjectsManagement.Models
 {
+    /// <summary>
+    /// Класс-обработчик событий фильтрации
+    /// </summary>
     public class FiltrationHandler
     {
         public string ProjectTitleFilter { get; set; }
@@ -13,6 +16,11 @@
         public int PriorityLeftFilter { get; set; } = -1;
         public int PriorityRightFilter { get; set; } = -1;
 
+        /// <summary>
+        /// Метод для фильтрации сотрудника по заданным параметрам
+        /// </summary>
+        /// <param name="Projects"></param>
+        /// <returns></returns>
         public IEnumerable<Project> ProjectsFiltration(IEnumerable<Project> Projects)
         {
             if (!String.IsNullOrEmpty(ProjectTitleFilter))
@@ -30,12 +38,10 @@
                 Projects = Projects.Where(prj => prj.ExecutorCompany_Title == ExecutorTitleFilter);
             }
 
-
             if (DtStartLeftFilter != DateTime.MinValue)
             {
                 Projects = Projects.Where(prj => prj.DtStart >= DtStartLeftFilter);
             }
-
 
             if (DtStartRightFilter != DateTime.MinValue)
             {
@@ -46,13 +52,11 @@
             {
                 Projects = Projects.Where(prj => prj.DtEnd >= DtEndLeftFilter);
             }
-            //
-
+            
             if (DtEndRightFilter != DateTime.MinValue)
             {
                 Projects = Projects.Where(prj => prj.DtEnd <= DtEndRightFilter);
             }
-
 
             if (PriorityLeftFilter != -1)
             {

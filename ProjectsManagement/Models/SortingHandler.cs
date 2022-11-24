@@ -1,16 +1,22 @@
 ﻿namespace ProjectsManagement.Models
 {
+    /// <summary>
+    /// Класс-обработчик событий фильтрации
+    /// </summary>
     public class SortingHandler
     {
         public string sortOrder { get; set; }
 
-
+        /// <summary>
+        /// Функция сортировки проектов
+        /// </summary>
+        /// <param name="Projects"></param>
+        /// <returns></returns>
         public IEnumerable<Project> ProjectsSorting(IEnumerable<Project> Projects)
         {
             IEnumerable<Employee?> LeadEmployees;
             IEnumerable<Project?> ProjectsWithoutLead;
             List<Project> ProjectsFiltrationResult = new List<Project>();
-
 
             switch (sortOrder)
             {
@@ -30,13 +36,26 @@
                     Projects = Projects.OrderByDescending(prj => prj.ExecutorCompany_Title);
                     break;
                 case "LeadName":
+                    //Сортировка по имени руководителя
+
+                    /*
+                     * Извлечение проектов без руководителя
+                     * Дальше производится JOIN по проектам и списку руководителей соответственно проекты без руководителей будут потеряны
+                     * Поэтому необходимо зафиксировать их
+                    */
                     ProjectsWithoutLead = Projects.Where(prj => prj.LeadEmployeeId == 0);
+
+                    //Извлечение всех руководителей проектов
                     LeadEmployees = Projects
                         .Select(prj => prj.Employees
                             .Where(employee => employee.Id == prj.LeadEmployeeId)
                             .FirstOrDefault())
                         .Where(emp => emp != null);
 
+                    /*
+                     * Если количество руководителей больше 0, производим JOIN проектов и списка руководителей, сортируем, добавляем в конец проекты без руководителей
+                     * Иначе сортировка не имеет смысла, возвращаем проекты в исходном порядке
+                    */
                     if (LeadEmployees.Count() != 0)
                     {
                         ProjectsFiltrationResult = Projects.Join(LeadEmployees,
@@ -65,23 +84,40 @@
                                prj_employee.LeadEmployeeId,
                                prj_employee.Priority
                                )).ToList();
+
+                        foreach (var Project in ProjectsWithoutLead)
+                        {
+                            ProjectsFiltrationResult = ProjectsFiltrationResult.Prepend(Project).ToList();
+                        }
+                        Projects = ProjectsFiltrationResult.AsEnumerable();
+
                     }
                     else
                     {
                         return Projects;
                     }
 
-                    foreach (var Project in ProjectsWithoutLead)
-                    {
-                        ProjectsFiltrationResult = ProjectsFiltrationResult.Prepend(Project).ToList();
-                    }
-                    Projects = ProjectsFiltrationResult.AsEnumerable();
+                    
 
                     break;
 
                 case "LeadName_desc":
+                    //Сортировка по имени руководителя
+
+                    /*
+                     * Извлечение проектов без руководителя
+                     * Дальше производится JOIN по проектам и списку руководителей соответственно проекты без руководителей будут потеряны
+                     * Поэтому необходимо зафиксировать их
+                    */
                     ProjectsWithoutLead = Projects.Where(prj => prj.LeadEmployeeId == 0);
+
+                    //Извлечение всех руководителей проектов
                     LeadEmployees = Projects.Select(prj => prj.Employees.Where(employe => employe.Id == prj.LeadEmployeeId).FirstOrDefault()).Where(emp => emp != null);
+
+                    /*
+                     * Если количество руководителей больше 0, производим JOIN проектов и списка руководителей, сортируем, добавляем в конец проекты без руководителей
+                     * Иначе сортировка не имеет смысла, возвращаем проекты в исходном порядке
+                    */
                     if (LeadEmployees.Count() != 0)
                     {
                         ProjectsFiltrationResult = Projects.Join(LeadEmployees,
@@ -110,17 +146,17 @@
                                prj_employee.LeadEmployeeId,
                                prj_employee.Priority
                                )).ToList();
+
+                        foreach (var Project in ProjectsWithoutLead)
+                        {
+                            ProjectsFiltrationResult.Add(Project);
+                        }
+                        Projects = ProjectsFiltrationResult.AsEnumerable();
                     }
                     else
                     {
                         return Projects;
                     }
-
-                    foreach (var Project in ProjectsWithoutLead)
-                    {
-                        ProjectsFiltrationResult.Add(Project);
-                    }
-                    Projects = ProjectsFiltrationResult.AsEnumerable();
 
                     break;
                 case "Priority":

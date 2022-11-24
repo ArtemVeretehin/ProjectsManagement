@@ -9,12 +9,17 @@ namespace ProjectsManagement.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Метод контроллера, возвращающий вкладку для работы с сотрудниками
+        /// </summary>
+        /// <returns></returns>
         public IActionResult EmployeesScreen()
         {
             List<Employee> Employees = EmployeesOperations.GetEmployees();
             return View(Employees);
         }
 
+        //Метод контроллера, инициализирующий добавление сотрудника в БД
         [HttpPost]
         public bool Add(string FirstName, string SurName, string LastName, string Email)
         {
@@ -22,6 +27,7 @@ namespace ProjectsManagement.Controllers
             return true;
         }
 
+        //Метод контроллера, инициализирующий изменение данных сотрудника в БД
         [HttpPost]
         public bool Edit(string Id,string FirstName, string SurName, string LastName, string Email)
         {
@@ -29,6 +35,7 @@ namespace ProjectsManagement.Controllers
             return true;
         }
 
+        //Метод контроллера, инициализирующий удаление данных сотрудника из БД
         [HttpPost]
         public bool Delete(string Id)
         {

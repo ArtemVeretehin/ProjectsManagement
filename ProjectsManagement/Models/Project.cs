@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 namespace ProjectsManagement.Models
 {
+    /// <summary>
+    /// Класс, представляющий проекты компании
+    /// </summary>
     public class Project
     {
         public int Id { get; set; }
@@ -17,6 +18,8 @@ namespace ProjectsManagement.Models
         public List<Employee> Employees { get; set; } = new List<Employee>();
         public int LeadEmployeeId { get; set; }
         public int Priority { get; set; }
+
+
         public Project(string Title, string CustomerCompany_Title, string ExecutorCompany_Title, DateTime? DtStart, DateTime? DtEnd, int Priority)
         {
             this.Title = Title;
